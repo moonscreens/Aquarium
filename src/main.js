@@ -13,9 +13,20 @@ const globalConfig = {
 
 const plane_geometry = new THREE.PlaneBufferGeometry(globalConfig.emoteScale, globalConfig.emoteScale);
 
+const bubble_material = new THREE.MeshPhysicalMaterial( {
+	color: 0xffffff,
+	metalness: 0.1,
+	roughness: 0.15,
+	depthWrite: false,
+	blending: THREE.AdditiveBlending,
+	transparency: 0.01, // use material.transparency for glass materials
+	opacity: 1,
+	transparent: true
+} );
+const bubble_geometry = new THREE.SphereBufferGeometry(globalConfig.emoteScale/10, 32, 16);
+
 const getSpawnPosition = () => {
 	const side = Math.random() > 0.5 ? -1 : 1;
-	console.log(globalConfig.cameraDistance*side)
 	return {
 		x: globalConfig.cameraDistance*side,
 		y: Math.random()*10-5,
@@ -29,6 +40,58 @@ const getSpawnPosition = () => {
 
 window.addEventListener('DOMContentLoaded', () => {
 	let camera, scene, renderer;
+
+	const bubbles = [];
+	const updateBubbles = (speedTimeRatio) => {
+		for (let index = 0; index < bubbles.length; index++) {
+			const bubble = bubbles[index];
+			bubble.p+=speedTimeRatio*bubble.r;
+			bubble.mesh.position.y += 0.025*speedTimeRatio;
+			bubble.mesh.position.x = bubble.x + (Math.sin(bubble.p/20)/2)*globalConfig.emoteScale;
+
+		}
+	}
+	setInterval(()=>{
+		bubbles.push(createBubble());
+	}, 250)
+
+	const bt = {}
+	const updateBubbleTemplate = () => {
+		bt.x = Math.random()*globalConfig.cameraDistance - globalConfig.cameraDistance/2;
+		bt.z = Math.random()*globalConfig.cameraDistance;
+		bt.y = -globalConfig.cameraDistance;
+		bt.spawns = 0;
+	}
+	updateBubbleTemplate();
+	setInterval(updateBubbleTemplate, 1000);
+
+	const createBubble = () => {
+		const bubble = new THREE.Mesh(bubble_geometry, bubble_material);
+		scene.add(bubble);
+
+		const x = bt.x;
+		const z = bt.z;
+		const y = bt.y;
+		bt.spawns++;
+
+		bubble.position.x = x;
+		bubble.position.z = z;
+		bubble.position.y = y;
+
+		const scale = 1/(bt.spawns/2+0.5);
+		bubble.scale.x = scale;
+		bubble.scale.y = scale;
+		bubble.scale.z = scale;
+
+		return {
+			mesh: bubble,
+			p: Math.random(),
+			r: Math.random(),
+			x,
+			y,
+			z,
+		}
+	}
 
 	init();
 	draw();
@@ -58,6 +121,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	function draw() {
 		requestAnimationFrame(draw);
 		const speedTimeRatio = (Date.now() - lastFrame) / 16;
+		updateBubbles(speedTimeRatio);
 		lastFrame = Date.now();
 
 		for (let index = 0; index < chatIntegration.emotes.length; index++) {
