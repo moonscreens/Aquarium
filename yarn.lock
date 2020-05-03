@@ -5254,9 +5254,9 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
-"twitch-chat@github:CalebBabin/twitch-chat#master":
-  version "0.1.0"
-  resolved "https://codeload.github.com/CalebBabin/twitch-chat/tar.gz/1814d4d5451aa2dfbe06d82ceb2645d8e8ee6d9c"
+"twitch-chat@github:CalebBabin/twitch-chat":
+  version "0.1.5"
+  resolved "https://codeload.github.com/CalebBabin/twitch-chat/tar.gz/6aba76bdf2160f82ed9c22df41a0aaf90f5d7079"
   dependencies:
     express "^4.17.1"
     tmi.js "^1.5.0"
