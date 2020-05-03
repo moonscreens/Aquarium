@@ -50,17 +50,17 @@ function getEmoteArrayFromMessage(text, emotes) {
 				for (let i in emotes) {
 					for (let index = 0; index < emotes[i].length; index++) {
 						const arr = emotes[i][index].split('-');
-					if (parseInt(arr[0]) === counter) {
-						output.push({
-							material: drawEmote('https://static-cdn.jtvnw.net/emoticons/v1/' + i + '/3.0'),
-							sprite: undefined,
-						});
+						if (parseInt(arr[0]) === counter) {
+							output.push({
+								material: drawEmote('https://static-cdn.jtvnw.net/emoticons/v1/' + i + '/3.0'),
+								sprite: undefined,
+							});
 							if (!emoteCache[string]) emoteCache[string] = 0;
 							emoteCache[string]++;
 
-					break;
-				}
-			}
+							break;
+						}
+					}
 				}
 			}
 			const bttvOutput = checkIfBTTVEmote(string);
@@ -95,9 +95,10 @@ const bttvEmotes = {};
 fetch('https://api.betterttv.net/3/cached/users/twitch/' + channelIDs[dehash(channels[0])])
 	.then(json => json.json())
 	.then(data => {
+		console.log(data);
 		if (!data.status || data.status != 404) {
-			for (let index = 0; index < data.channelEmotes.length; index++) {
-				const emote = data.channelEmotes[index];
+			for (let index = 0; index < data.sharedEmotes.length; index++) {
+				const emote = data.sharedEmotes[index];
 				bttvEmotes[emote.code] = emote.id;
 			}
 		}
@@ -132,11 +133,12 @@ if (window.devEnvironment || false) {
 	setInterval(() => {
 		getEmoteArrayFromMessage(randomEmoteSelection[Math.floor(Math.random() * randomEmoteSelection.length)], []);
 	}, 100);
+
+	setInterval(()=>{
+		getEmoteArrayFromMessage('moon2EE moon2LL moon2LL moon2LL moon2LL Clap', {"301948071":["0-6"],"301948074":["8-14","16-22","24-30","32-38"]});
+	}, 1000)
 }
 
-setTimeout(()=>{
-	getEmoteArrayFromMessage('HACKERMANS  ', []);
-}, 1000)
 
 const emoteMaterials = {};
 
