@@ -25,4 +25,24 @@ module.exports = (scene, globalConfig) => {
 
 	scene.add(directionalLight);
 
+	for (let x = 0; x < 10; x++) {
+		for (let y = 0; y < 10; y++) {
+			for (let z = 0; z < 10; z++) {
+
+				const geometry = new THREE.BoxGeometry();
+				const material = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+				const cube = new THREE.Mesh(geometry, material);
+
+				cube.castShadow = true;
+				cube.receiveShadow = true;
+
+				cube.position.x = x * 2 - 10;
+				cube.position.y = y * 2 - 20;
+				cube.position.z = z * 2 - 10;
+
+				scene.add(cube);
+			}
+		}
+	}
+
 }

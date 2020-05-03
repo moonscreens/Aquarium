@@ -23,6 +23,7 @@
 		"parcel": "^1.12.4",
 		"sass": "^1.26.3",
 		"three": "^0.115.0",
-		"tmi.js": "^1.5.0"
+		"tmi.js": "^1.5.0",
+		"twitch-chat": "github:CalebBabin/twitch-chat#master"
 	}
 }
