@@ -43,17 +43,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	const bubbles = [];
 	const updateBubbles = (speedTimeRatio) => {
-		for (let index = 0; index < bubbles.length; index++) {
+		for (let index = bubbles.length-1; index >= 0; index--) {
 			const bubble = bubbles[index];
 			bubble.p+=speedTimeRatio*bubble.r;
 			bubble.mesh.position.y += 0.025*speedTimeRatio;
 			bubble.mesh.position.x = bubble.x + (Math.sin(bubble.p/20)/2)*globalConfig.emoteScale;
 
+			if (bubble.mesh.position.y > globalConfig.cameraDistance) {
+				scene.remove(bubble.mesh);
+				bubbles.splice(index, 1);
+			}
 		}
 	}
-	setInterval(()=>{
-		bubbles.push(createBubble());
-	}, 250)
 
 	const bt = {}
 	const updateBubbleTemplate = () => {
@@ -63,9 +64,11 @@ window.addEventListener('DOMContentLoaded', () => {
 		bt.spawns = 0;
 	}
 	updateBubbleTemplate();
-	setInterval(updateBubbleTemplate, 1000);
 
 	const createBubble = () => {
+		if (Math.random() > 0.9 || bt.spawns > 12) {
+			updateBubbleTemplate();
+		}
 		const bubble = new THREE.Mesh(bubble_geometry, bubble_material);
 		scene.add(bubble);
 
@@ -83,14 +86,14 @@ window.addEventListener('DOMContentLoaded', () => {
 		bubble.scale.y = scale;
 		bubble.scale.z = scale;
 
-		return {
+		bubbles.push({
 			mesh: bubble,
 			p: Math.random(),
 			r: Math.random(),
 			x,
 			y,
 			z,
-		}
+		})
 	}
 
 	init();
@@ -120,6 +123,10 @@ window.addEventListener('DOMContentLoaded', () => {
 	let lastFrame = Date.now();
 	function draw() {
 		requestAnimationFrame(draw);
+
+		if (Math.random() > 0.9) {
+			createBubble();
+		}
 		const speedTimeRatio = (Date.now() - lastFrame) / 16;
 		updateBubbles(speedTimeRatio);
 		lastFrame = Date.now();
