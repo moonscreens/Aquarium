@@ -45,18 +45,22 @@ function getEmoteArrayFromMessage(text, emotes) {
 	const emoteCache = {};
 	for (let index = 0; index < stringArr.length; index++) {
 		const string = stringArr[index];
-		if (!emoteCache[string]) {
+		if (!emoteCache[string] || emoteCache[string] < 5) {
 			if (emotes !== null) {
 				for (let i in emotes) {
-					const arr = emotes[i][0].split('-');
+					for (let index = 0; index < emotes[i].length; index++) {
+						const arr = emotes[i][index].split('-');
 					if (parseInt(arr[0]) === counter) {
 						output.push({
 							material: drawEmote('https://static-cdn.jtvnw.net/emoticons/v1/' + i + '/3.0'),
 							sprite: undefined,
 						});
-						emoteCache[string] = true;
-					}
+							if (!emoteCache[string]) emoteCache[string] = 0;
+							emoteCache[string]++;
+
 					break;
+				}
+			}
 				}
 			}
 			const bttvOutput = checkIfBTTVEmote(string);
@@ -82,24 +86,24 @@ function getEmoteArrayFromMessage(text, emotes) {
 	}
 }
 
+const channelIDs = {
+	"moonmoon": 121059319,
+	"antimattertape": 92640027,
+}
 
 const bttvEmotes = {};
-fetch('https://api.betterttv.net/2/channels/' + dehash(channels[0]), {
-	mode: 'no-cors',
-})
+fetch('https://api.betterttv.net/3/cached/users/twitch/' + channelIDs[dehash(channels[0])])
 	.then(json => json.json())
 	.then(data => {
 		if (!data.status || data.status != 404) {
-			for (let index = 0; index < data.emotes.length; index++) {
-				const emote = data.emotes[index];
+			for (let index = 0; index < data.channelEmotes.length; index++) {
+				const emote = data.channelEmotes[index];
 				bttvEmotes[emote.code] = emote.id;
 			}
 		}
 	})
 
-fetch('https://api.betterttv.net/3/cached/emotes/global', {
-	mode: 'no-cors',
-})
+fetch('https://api.betterttv.net/3/cached/emotes/global')
 	.then(json => json.json())
 	.then(data => {
 		if (data && data.length > 0) {
