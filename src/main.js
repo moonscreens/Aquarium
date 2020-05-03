@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import Chat from 'twitch-chat';
 
-let channels = ['moonmoon'];
+let channels = ['moonmoon', 'antimattertape'];
 const query_vars = {};
 const query_parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
 	query_vars[key] = value;
@@ -74,10 +74,10 @@ window.addEventListener('DOMContentLoaded', () => {
 	const updateBubbles = (speedTimeRatio) => {
 		for (let index = bubbles.length-1; index >= 0; index--) {
 			const bubble = bubbles[index];
-			bubble.p+=speedTimeRatio*bubble.r;
+			bubble.p+=speedTimeRatio*(bubble.r*2-1);
 			bubble.mesh.position.y += 0.025*speedTimeRatio;
-			bubble.mesh.position.x = bubble.x + (Math.sin(bubble.p/20)/2)*globalConfig.emoteScale;
-			bubble.mesh.position.z = bubble.z + (Math.cos(bubble.p/20)/2)*globalConfig.emoteScale;
+			bubble.mesh.position.x = bubble.x + (Math.sin(bubble.p/20)/2)*globalConfig.emoteScale*bubble.r2;
+			bubble.mesh.position.z = bubble.z + (Math.cos(bubble.p/20)/2)*globalConfig.emoteScale*bubble.r2;
 
 			if (bubble.mesh.position.y > globalConfig.cameraDistance) {
 				scene.remove(bubble.mesh);
@@ -120,6 +120,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			mesh: bubble,
 			p: Math.random(),
 			r: Math.random(),
+			r2: Math.random(),
 			x,
 			y,
 			z,
