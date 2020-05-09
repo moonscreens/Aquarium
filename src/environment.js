@@ -25,7 +25,7 @@ module.exports = (scene, globalConfig) => {
 
 	scene.add(directionalLight);
 
-	for (let x = 0; x < 10; x++) {
+	/*for (let x = 0; x < 10; x++) {
 		for (let y = 0; y < 10; y++) {
 			for (let z = 0; z < 10; z++) {
 
@@ -43,6 +43,6 @@ module.exports = (scene, globalConfig) => {
 				scene.add(cube);
 			}
 		}
-	}
+	}*/
 
 }
