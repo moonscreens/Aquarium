@@ -189,7 +189,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			const ratio = 0.035*speedTimeRatio;
 			emotes.group.position.x += emotes.pos.vx*ratio;
 			emotes.group.position.y += emotes.pos.vy*ratio;
-			emotes.group.position.z += emotes.pos.vz*ratio;
+			//emotes.group.position.z += emotes.pos.vz*ratio;
 
 			if (
 				emotes.group.position.x > globalConfig.cameraDistance*2 || 
