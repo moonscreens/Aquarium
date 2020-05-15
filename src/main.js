@@ -36,8 +36,8 @@ const globalConfig = {
 	speed: 0.002,
 	emoteScale: 1,
 
-	cameraDistance: 25,
-	cameraFar: 30,
+	cameraDistance: 35,
+	cameraFar: 40,
 }
 
 const plane_geometry = new THREE.PlaneBufferGeometry(globalConfig.emoteScale, globalConfig.emoteScale);
@@ -59,7 +59,7 @@ const getSpawnPosition = () => {
 	return {
 		x: globalConfig.cameraDistance*side,
 		y: Math.random()*10-5,
-		z: Math.random()*globalConfig.cameraDistance/2 + globalConfig.cameraDistance/4,
+		z: Math.random()*globalConfig.cameraDistance/1.25,
 		vx: side*-1,
 		vy: (Math.random()-0.5)/4,
 		vz: (Math.random()-0.5)/2,
@@ -77,7 +77,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			bubble.p+=speedTimeRatio*(bubble.r*2-1);
 			bubble.mesh.position.y += 0.025*speedTimeRatio;
 			bubble.mesh.position.x = bubble.x + (Math.sin(bubble.p/20)/2)*globalConfig.emoteScale*bubble.r2;
-			bubble.mesh.position.z = bubble.z + (Math.cos(bubble.p/20)/2)*globalConfig.emoteScale*bubble.r2;
+			//bubble.mesh.position.z = bubble.z + (Math.cos(bubble.p/20)/2)*globalConfig.emoteScale*bubble.r2;
 
 			if (bubble.mesh.position.y > globalConfig.cameraDistance) {
 				scene.remove(bubble.mesh);
