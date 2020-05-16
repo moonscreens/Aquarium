@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-
 import Chat from 'twitch-chat';
+
+const startTime = Date.now();
 
 let channels = ['moonmoon', 'antimattertape'];
 const query_vars = {};
@@ -17,8 +18,8 @@ const ChatInstance = new Chat({
 
 const emoteTextures = {};
 const pendingEmoteArray = [];
-ChatInstance.dispatch = (e)=>{
-	const output = {emotes: []};
+ChatInstance.dispatch = (e) => {
+	const output = { emotes: [] };
 	for (let index = 0; index < e.emotes.length; index++) {
 		const emote = e.emotes[index];
 		if (!emoteTextures[emote.material.id]) {
@@ -42,27 +43,36 @@ const globalConfig = {
 
 const plane_geometry = new THREE.PlaneBufferGeometry(globalConfig.emoteScale, globalConfig.emoteScale);
 
-const bubble_material = new THREE.MeshPhysicalMaterial( {
-	color: 0xffffff,
-	metalness: 0.1,
-	roughness: 0.15,
-	depthWrite: false,
-	blending: THREE.AdditiveBlending,
-	transparency: 0.01, // use material.transparency for glass materials
-	opacity: 1,
-	transparent: true
-} );
-const bubble_geometry = new THREE.SphereBufferGeometry(globalConfig.emoteScale/10, 32, 16);
+const fragmentShader = require('./fragmentShader.js');
+const vertexShader = require('./vertexShader.js');
+const uniforms = {
+	time: { value: 1.0 },
+	"mRefractionRatio": { value: 1.02 },
+	"mFresnelBias": { value: 0.1 },
+	"mFresnelPower": { value: 2.0 },
+	"mFresnelScale": { value: 1.0 },
+	"tCube": { 
+		value: new THREE.CubeTextureLoader().load(new Array(6).fill(require('./fake_cube.jpg'), 0, 6)) 
+	},
+}
+
+const bubble_material = new THREE.ShaderMaterial({
+	uniforms,
+	fragmentShader,
+	vertexShader,
+	transparent: true,
+});
+const bubble_geometry = new THREE.SphereBufferGeometry(globalConfig.emoteScale/5, 32, 16);
 
 const getSpawnPosition = () => {
 	const side = Math.random() > 0.5 ? -1 : 1;
 	return {
-		x: globalConfig.cameraDistance*side,
-		y: Math.random()*10-5,
-		z: Math.random()*globalConfig.cameraDistance/1.25,
-		vx: side*-1,
-		vy: (Math.random()-0.5)/4,
-		vz: (Math.random()-0.5)/2,
+		x: globalConfig.cameraDistance * side,
+		y: Math.random() * 10 - 5,
+		z: Math.random() * globalConfig.cameraDistance / 1.25,
+		vx: side * -1,
+		vy: (Math.random() - 0.5) / 4,
+		vz: (Math.random() - 0.5) / 2,
 		side,
 	}
 }
@@ -72,11 +82,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	const bubbles = [];
 	const updateBubbles = (speedTimeRatio) => {
-		for (let index = bubbles.length-1; index >= 0; index--) {
+		for (let index = bubbles.length - 1; index >= 0; index--) {
 			const bubble = bubbles[index];
-			bubble.p+=speedTimeRatio*(bubble.r*2-1);
-			bubble.mesh.position.y += 0.025*speedTimeRatio;
-			bubble.mesh.position.x = bubble.x + (Math.sin(bubble.p/20)/2)*globalConfig.emoteScale*bubble.r2;
+			bubble.p += speedTimeRatio * (bubble.r * 2 - 1);
+			bubble.mesh.position.y += 0.05 * speedTimeRatio;
+			bubble.mesh.position.x = bubble.x + (Math.sin(bubble.p / 15) / 2) * globalConfig.emoteScale * bubble.r2;
 			//bubble.mesh.position.z = bubble.z + (Math.cos(bubble.p/20)/2)*globalConfig.emoteScale*bubble.r2;
 
 			if (bubble.mesh.position.y > globalConfig.cameraDistance) {
@@ -88,9 +98,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	const bt = {}
 	const updateBubbleTemplate = () => {
-		bt.x = Math.random()*globalConfig.cameraDistance - globalConfig.cameraDistance/2;
-		bt.z = Math.random()*globalConfig.cameraDistance;
-		bt.y = -globalConfig.cameraDistance;
+		bt.x = Math.random() * globalConfig.cameraDistance - globalConfig.cameraDistance / 2;
+		bt.z = Math.random() * globalConfig.cameraDistance;
+		bt.y = -globalConfig.cameraDistance / 2;
 		bt.spawns = 0;
 	}
 	updateBubbleTemplate();
@@ -111,7 +121,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		bubble.position.z = z;
 		bubble.position.y = y;
 
-		const scale = 1/(bt.spawns/2+0.5);
+		const scale = 1 / (bt.spawns / 2 + 0.5);
 		bubble.scale.x = scale;
 		bubble.scale.y = scale;
 		bubble.scale.z = scale;
@@ -165,9 +175,12 @@ window.addEventListener('DOMContentLoaded', () => {
 		if (Math.random() > 0.9) {
 			createBubble();
 		}
-		const speedTimeRatio = (Date.now() - lastFrame) / 16;
+		let speedTimeRatio = (Date.now() - lastFrame) / 16;
+		if (speedTimeRatio === NaN) speedTimeRatio = 1;
 		updateBubbles(speedTimeRatio);
 		lastFrame = Date.now();
+
+		uniforms.time.value = (Date.now() - startTime) / 160;
 
 		for (let index = 0; index < pendingEmoteArray.length; index++) {
 			const emotes = pendingEmoteArray[index];
@@ -186,15 +199,15 @@ window.addEventListener('DOMContentLoaded', () => {
 				emotes.initGroup = true;
 			}
 
-			const ratio = 0.035*speedTimeRatio;
-			emotes.group.position.x += emotes.pos.vx*ratio;
-			emotes.group.position.y += emotes.pos.vy*ratio;
+			const ratio = 0.035 * speedTimeRatio;
+			emotes.group.position.x += emotes.pos.vx * ratio;
+			emotes.group.position.y += emotes.pos.vy * ratio;
 			//emotes.group.position.z += emotes.pos.vz*ratio;
 
 			if (
-				emotes.group.position.x > globalConfig.cameraDistance*2 || 
-				emotes.group.position.x < globalConfig.cameraDistance*-2 || 
-				emotes.group.position.y > globalConfig.cameraDistance*2) {
+				emotes.group.position.x > globalConfig.cameraDistance * 2 ||
+				emotes.group.position.x < globalConfig.cameraDistance * -2 ||
+				emotes.group.position.y > globalConfig.cameraDistance * 2) {
 				for (let i = 0; i < emotes.emotes.length; i++) {
 					const emote = emotes.emotes[i];
 					emotes.group.remove(emote.sprite);
@@ -202,7 +215,7 @@ window.addEventListener('DOMContentLoaded', () => {
 				scene.remove(emotes.group);
 				pendingEmoteArray.splice(index, 1);
 			} else {
-				emotes.progress += globalConfig.speed*globalConfig.emoteSpeedRatio*speedTimeRatio;
+				emotes.progress += globalConfig.speed * globalConfig.emoteSpeedRatio * speedTimeRatio;
 
 				for (let i = 0; i < emotes.emotes.length; i++) {
 					const emote = emotes.emotes[i];
