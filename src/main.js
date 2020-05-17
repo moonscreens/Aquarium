@@ -220,7 +220,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			eelTexture.needsUpdate = true;
 		}
 
-		environment.eelLayer.position.x = environment.eelLayer.originalPositionX + Math.sin(Date.now()/1000)*2;
+		environment.eelLayer.position.x = environment.eelLayer.originalPositionX + Math.sin(Date.now()/2000)*2;
 
 		for (const key in emoteTextures) {
 			if (emoteTextures.hasOwnProperty(key)) {
