@@ -120,7 +120,7 @@ const getSpawnPosition = () => {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-	let camera, scene, renderer;
+	let camera, scene, renderer, environment;
 
 	const bubbles = [];
 	const updateBubbles = (speedTimeRatio) => {
@@ -190,7 +190,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		camera.lookAt(0, 0, 0);
 
 		scene = new THREE.Scene();
-		setupEnvironment(scene, globalConfig);
+		environment = setupEnvironment(scene, globalConfig);
 
 		renderer = new THREE.WebGLRenderer({ antialias: true });
 		renderer.shadowMap.enabled = true;
@@ -219,6 +219,8 @@ window.addEventListener('DOMContentLoaded', () => {
 			eelCtx.drawImage(eelImages[currentEelFrame], 0, 0);
 			eelTexture.needsUpdate = true;
 		}
+
+		environment.eelLayer.position.x = environment.eelLayer.originalPositionX + Math.sin(Date.now()/1000)*2;
 
 		for (const key in emoteTextures) {
 			if (emoteTextures.hasOwnProperty(key)) {
