@@ -41,6 +41,48 @@ const globalConfig = {
 	cameraFar: 40,
 }
 
+const eelImageSrc = [
+	require(`./eel/eel_1.png`),
+	require(`./eel/eel_2.png`),
+	require(`./eel/eel_3.png`),
+	require(`./eel/eel_4.png`),
+	require(`./eel/eel_5.png`),
+	require(`./eel/eel_6.png`),
+	require(`./eel/eel_7.png`),
+	require(`./eel/eel_8.png`),
+	require(`./eel/eel_9.png`),
+	require(`./eel/eel_10.png`),
+	require(`./eel/eel_11.png`),
+	require(`./eel/eel_12.png`),
+	require(`./eel/eel_13.png`),
+	require(`./eel/eel_14.png`),
+	require(`./eel/eel_15.png`),
+	require(`./eel/eel_16.png`),
+	require(`./eel/eel_17.png`),
+	require(`./eel/eel_18.png`),
+	require(`./eel/eel_19.png`),
+	require(`./eel/eel_20.png`),
+];
+
+const eelImages = new Array(20);
+for (let index = 0; index < eelImages.length; index++) {
+	eelImages[index] = new Image();
+	/*eelImages[index].addEventListener('load', ()=>{
+		if (eelCanvas.height < eelImages[index].height) eelCanvas.height = Math.max(eelCanvas.height, eelImages[index].height);
+		if (eelCanvas.width < eelImages[index].width) eelCanvas.width = Math.max(eelCanvas.width, eelImages[index].width);
+	});*/
+	eelImages[index].src = eelImageSrc[index];
+}
+const eelCanvas = document.createElement('canvas');
+eelCanvas.height = 500;
+eelCanvas.width = 1500;
+const eelCtx = eelCanvas.getContext('2d');
+const eelFPS = 12;
+let lastEelFrame = Date.now();
+let currentEelFrame = 0;
+const eelTexture = new THREE.CanvasTexture(eelCanvas);
+globalConfig.eelTexture = eelTexture;
+
 const plane_geometry = new THREE.PlaneBufferGeometry(globalConfig.emoteScale, globalConfig.emoteScale);
 
 const fragmentShader = require('./fragmentShader.js');
@@ -106,7 +148,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	updateBubbleTemplate();
 
 	const createBubble = () => {
-		if (Math.random() > 0.9 || bt.spawns > 12) {
+		if (Math.random() > 0.5 || bt.spawns > 48) {
 			updateBubbleTemplate();
 		}
 		const bubble = new THREE.Mesh(bubble_geometry, bubble_material);
@@ -164,6 +206,19 @@ window.addEventListener('DOMContentLoaded', () => {
 	let lastFrame = Date.now();
 	function draw() {
 		requestAnimationFrame(draw);
+
+		const eelTimeDiff = Date.now() - lastEelFrame;
+		if (eelTimeDiff > 1000/eelFPS) {
+			lastEelFrame = Date.now();
+			currentEelFrame += Math.floor(eelTimeDiff/(1000/eelFPS));
+			if (currentEelFrame >= eelImages.length) {
+				currentEelFrame -= eelImages.length;
+			}
+			
+			eelCtx.clearRect(0, 0, eelCanvas.width, eelCanvas.height);
+			eelCtx.drawImage(eelImages[currentEelFrame], 0, 0);
+			eelTexture.needsUpdate = true;
+		}
 
 		for (const key in emoteTextures) {
 			if (emoteTextures.hasOwnProperty(key)) {
