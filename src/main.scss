@@ -6,4 +6,12 @@ body, html, canvas {
     background: #000000;
     color: white;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    min-width: 1920px;
+    min-height: 1080px;
 }

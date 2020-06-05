@@ -196,9 +196,11 @@ window.addEventListener('DOMContentLoaded', () => {
 		renderer.shadowMap.enabled = true;
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		window.addEventListener('resize', () => {
-			camera.aspect = window.innerWidth / window.innerHeight;
+			const canvas = document.querySelector('canvas');
+			canvas.removeAttribute('style');
+			camera.aspect = canvas.offsetWidth / canvas.offsetHeight;
 			camera.updateProjectionMatrix();
-			renderer.setSize(window.innerWidth, window.innerHeight);
+			renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
 		})
 		document.body.appendChild(renderer.domElement);
 	}
@@ -206,6 +208,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	let lastFrame = Date.now();
 	function draw() {
 		requestAnimationFrame(draw);
+		const delta = (Date.now() - lastEelFrame)/1000;
 
 		const eelTimeDiff = Date.now() - lastEelFrame;
 		if (eelTimeDiff > 1000/eelFPS) {
@@ -243,6 +246,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			const emotes = pendingEmoteArray[index];
 
 			if (!emotes.group) {
+				emotes.random = Math.random()
 				emotes.group = new THREE.Group();
 				const position = getSpawnPosition(globalConfig.emoteSpawnRatio);
 				emotes.pos = position;
@@ -285,6 +289,10 @@ window.addEventListener('DOMContentLoaded', () => {
 					if (emote && emote.sprite) {
 						emote.sprite.material.needsUpdate = true;
 					}
+
+					if (!emote.sin) emote.sin = -(i*emoteSinVariation + emotes.random*Math.PI*2);
+					emote.sin += delta*2.5;
+					emote.sprite.position.y = Math.sin(emote.sin/10)/2
 				}
 
 				if (emotes.initGroup) {
@@ -297,3 +305,5 @@ window.addEventListener('DOMContentLoaded', () => {
 		renderer.render(scene, camera);
 	}
 })
+
+const emoteSinVariation = 2;
