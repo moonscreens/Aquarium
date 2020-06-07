@@ -86,26 +86,11 @@ globalConfig.eelTexture = eelTexture;
 
 const plane_geometry = new THREE.PlaneBufferGeometry(globalConfig.emoteScale, globalConfig.emoteScale);
 
-const fragmentShader = require('./fragmentShader.js');
-const vertexShader = require('./vertexShader.js');
-const uniforms = {
-	time: { value: 1.0 },
-	"mRefractionRatio": { value: 1.02 },
-	"mFresnelBias": { value: 0.1 },
-	"mFresnelPower": { value: 2.0 },
-	"mFresnelScale": { value: 1.0 },
-	"tCube": { 
-		value: new THREE.CubeTextureLoader().load(new Array(6).fill(require('./fake_cube.jpg'), 0, 6)) 
-	},
-}
-
-const bubble_material = new THREE.ShaderMaterial({
-	uniforms,
-	fragmentShader,
-	vertexShader,
+const bubble_material = new THREE.MeshBasicMaterial({
+	map: new THREE.TextureLoader().load(require('./bubble.png')),
 	transparent: true,
 });
-const bubble_geometry = new THREE.SphereBufferGeometry(globalConfig.emoteScale/5, 32, 16);
+const bubble_geometry = new THREE.PlaneBufferGeometry(globalConfig.emoteScale/5, globalConfig.emoteScale/5);
 
 const getSpawnPosition = () => {
 	const side = Math.random() > 0.5 ? -1 : 1;
@@ -247,8 +232,6 @@ window.addEventListener('DOMContentLoaded', () => {
 		if (speedTimeRatio === NaN) speedTimeRatio = 1;
 		updateBubbles(speedTimeRatio);
 		lastFrame = Date.now();
-
-		uniforms.time.value = (Date.now() - startTime) / 160;
 
 		for (let index = 0; index < pendingEmoteArray.length; index++) {
 			const emotes = pendingEmoteArray[index];

@@ -16,7 +16,7 @@ const seaWeedMaterial = new THREE.MeshBasicMaterial({
 });
 console.log(seaWeedImageURL)
 
-const planeGeometry = new THREE.PlaneBufferGeometry(1.777777777777778, 1);
+const planeGeometry = new THREE.PlaneBufferGeometry(2, 1);
 const newPlaneImage = (url, options = {}) => {
 	options = Object.assign({
 		zpos: 10,
@@ -90,15 +90,17 @@ module.exports = (scene, globalConfig) => {
 	const layerOffset = 0.01;
 	const layer1 = newPlaneImage(layerimages[0], {
 		zpos: 27,
-		scale: 11.2,
+		scale: 9.99,
 	});
+	layer1.position.y = -0.62
 	layer1.position.z -= (layerOffset * 0);
 	scene.add(layer1);
 
 	const layer3 = newPlaneImage(layerimages[2], {
 		zpos: 19,
-		scale: 22.45,
+		scale: 20.1,
 	});
+	layer3.position.y = -1.21;
 	layer3.position.z -= (layerOffset * 1);
 	scene.add(layer3);
 
@@ -124,22 +126,25 @@ module.exports = (scene, globalConfig) => {
 
 	const layer2 = newPlaneImage(layerimages[1], {
 		zpos: 19,
-		scale: 22.45,
+		scale: 20.1,
 	});
+	layer2.position.y = -1.21;
 	layer2.position.z -= (layerOffset * 3);
 	scene.add(layer2);
 
 	const layer4 = newPlaneImage(layerimages[3], {
 		zpos: 19,
-		scale: 22.45,
+		scale: 20.1,
 	});
+	layer4.position.y = -1.21;
 	layer4.position.z -= (layerOffset * 4);
 	scene.add(layer4);
 
 	const layer5 = newPlaneImage(layerimages[4], {
 		zpos: 10,
-		scale: 35,
+		scale: 31.3,
 	});
+	layer5.position.y = -1.9
 	layer5.position.z -= (layerOffset * 4);
 	scene.add(layer5);
 
