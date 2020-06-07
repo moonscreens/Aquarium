@@ -215,7 +215,9 @@ window.addEventListener('DOMContentLoaded', () => {
 			const weed = environment.weeds[index];
 			if (!weed.p) weed.p = weed.position.x/10;
 			weed.p += delta/4;
-			weed.position.x += Math.sin(weed.p)/100;
+			weed.position.x += Math.sin(weed.p)/150;
+			weed.rotation.z = Math.sin(weed.p)/50;
+			weed.position.y += Math.sin(weed.p*1.2)/100;
 		}
 
 		for (const key in emoteTextures) {
