@@ -14,14 +14,14 @@ if (query_vars.channels) {
 
 const ChatInstance = new Chat({
 	channels,
-	duplicateEmoteLimit: 3,
+	duplicateEmoteLimit: 5,
 })
 
 const emoteTextures = {};
 const pendingEmoteArray = [];
 ChatInstance.dispatch = (e) => {
 	const output = { emotes: [] };
-	for (let index = 0; index < e.emotes.length; index++) {
+	for (let index = 0; index < Math.min(7, e.emotes.length); index++) {
 		const emote = e.emotes[index];
 		if (!emoteTextures[emote.material.id]) {
 			emoteTextures[emote.material.id] = new THREE.CanvasTexture(emote.material.canvas);
@@ -214,8 +214,8 @@ window.addEventListener('DOMContentLoaded', () => {
 		for (let index = 0; index < environment.weeds.length; index++) {
 			const weed = environment.weeds[index];
 			if (!weed.p) weed.p = weed.position.x/10;
-			weed.p += delta/7;
-			weed.rotation.z = Math.sin(weed.p)/15;
+			weed.p += delta/4;
+			weed.position.x += Math.sin(weed.p)/100;
 		}
 
 		for (const key in emoteTextures) {
