@@ -8,6 +8,14 @@ const layerimages = [
 	require('./layer5.png'),
 ]
 
+const seaWeedImageURL = require('./seaweed2x.png');
+const seaWeedGeometry = new THREE.PlaneBufferGeometry(0.0435903182429404, 1);
+const seaWeedMaterial = new THREE.MeshBasicMaterial({
+	map: new THREE.TextureLoader().load(seaWeedImageURL),
+	transparent: true,
+});
+console.log(seaWeedImageURL)
+
 const planeGeometry = new THREE.PlaneBufferGeometry(1.777777777777778, 1);
 const newPlaneImage = (url, options = {}) => {
 	options = Object.assign({
@@ -58,6 +66,26 @@ module.exports = (scene, globalConfig) => {
 
 	scene.add(directionalLight);
 
+	const weeds = new Array(60)
+	for (let index = 0; index < weeds.length; index++) {
+		const seaweedMesh = new THREE.Mesh(seaWeedGeometry, seaWeedMaterial)
+
+		const group = new THREE.Group();
+		group.add(seaweedMesh);
+		seaweedMesh.position.y = 0.5;
+
+		const scale = Math.random()*15;
+		group.scale.x = 15+scale;
+		group.scale.y = 15+scale;
+
+		group.position.y = -30 - (Math.random()*10 - 5);
+
+		group.position.x = Math.round(Math.random()*60 - 30);
+		const zrand = Math.random();
+		group.position.z = Math.round((zrand*zrand)*30);
+		scene.add(group);
+		weeds[index] = group;
+	}
 
 	const layerOffset = 0.01;
 	const layer1 = newPlaneImage(layerimages[0], {
@@ -137,5 +165,6 @@ module.exports = (scene, globalConfig) => {
 
 	return {
 		eelLayer,
+		weeds,
 	}
 }

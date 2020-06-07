@@ -226,6 +226,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
 		environment.eelLayer.position.x = environment.eelLayer.originalPositionX + Math.sin(Date.now()/2000)*2;
 
+		for (let index = 0; index < environment.weeds.length; index++) {
+			const weed = environment.weeds[index];
+			if (!weed.p) weed.p = weed.position.x/10;
+			weed.p += delta/7;
+			weed.rotation.z = Math.sin(weed.p)/15;
+		}
+
 		for (const key in emoteTextures) {
 			if (emoteTextures.hasOwnProperty(key)) {
 				const element = emoteTextures[key];
