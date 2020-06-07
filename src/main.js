@@ -14,6 +14,7 @@ if (query_vars.channels) {
 
 const ChatInstance = new Chat({
 	channels,
+	duplicateEmoteLimit: 3,
 })
 
 const emoteTextures = {};
@@ -192,7 +193,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		scene = new THREE.Scene();
 		environment = setupEnvironment(scene, globalConfig);
 
-		renderer = new THREE.WebGLRenderer({ antialias: true });
+		renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 		renderer.shadowMap.enabled = true;
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		window.addEventListener('resize', () => {
@@ -291,8 +292,9 @@ window.addEventListener('DOMContentLoaded', () => {
 					}
 
 					if (!emote.sin) emote.sin = -(i*emoteSinVariation + emotes.random*Math.PI*2);
-					emote.sin += delta*2.5;
-					emote.sprite.position.y = Math.sin(emote.sin/10)/2
+					emote.sin += delta*4;
+					emote.sprite.position.y = Math.sin(emote.sin/10)/4
+					emote.sprite.rotation.z = Math.sin(emote.sin/10-1)/3
 				}
 
 				if (emotes.initGroup) {
@@ -306,4 +308,4 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 })
 
-const emoteSinVariation = 2;
+const emoteSinVariation = 8;
