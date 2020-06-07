@@ -294,7 +294,7 @@ window.addEventListener('DOMContentLoaded', () => {
 					if (!emote.sin) emote.sin = -(i*emoteSinVariation + emotes.random*Math.PI*2);
 					emote.sin += delta*4;
 					emote.sprite.position.y = Math.sin(emote.sin/10)/4
-					emote.sprite.rotation.z = Math.sin(emote.sin/10-1)/3
+					emote.sprite.rotation.z = Math.sin(emote.sin/10-Math.PI/2)/3
 				}
 
 				if (emotes.initGroup) {
