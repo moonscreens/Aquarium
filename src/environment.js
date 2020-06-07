@@ -119,7 +119,7 @@ module.exports = (scene, globalConfig) => {
 	eelLayer.scale.y = 10;
 	eelLayer.position.x = -14;
 	eelLayer.originalPositionX = eelLayer.position.x;
-	eelLayer.position.y = -7.25;
+	eelLayer.position.y = -7;
 	eelLayer.position.z = 19;
 	eelLayer.position.z -= (layerOffset * 2);
 	scene.add(eelLayer);

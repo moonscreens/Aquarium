@@ -75,8 +75,8 @@ for (let index = 0; index < eelImages.length; index++) {
 	eelImages[index].src = eelImageSrc[index];
 }
 const eelCanvas = document.createElement('canvas');
-eelCanvas.height = 500;
-eelCanvas.width = 1500;
+eelCanvas.height = 512;
+eelCanvas.width = 1024;
 const eelCtx = eelCanvas.getContext('2d');
 const eelFPS = 12;
 let lastEelFrame = Date.now();
