@@ -209,7 +209,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			eelTexture.needsUpdate = true;
 		}
 
-		environment.eelLayer.position.x = environment.eelLayer.originalPositionX + Math.sin(Date.now()/2000)*2;
+		environment.eelLayer.position.x = environment.eelLayer.originalPositionX + Math.sin(Date.now()/2000)*1.8;
 
 		for (let index = 0; index < environment.weeds.length; index++) {
 			const weed = environment.weeds[index];
