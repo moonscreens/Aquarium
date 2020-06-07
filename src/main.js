@@ -95,9 +95,9 @@ const bubble_geometry = new THREE.PlaneBufferGeometry(globalConfig.emoteScale/5,
 const getSpawnPosition = () => {
 	const side = Math.random() > 0.5 ? -1 : 1;
 	return {
-		x: globalConfig.cameraDistance * side,
-		y: Math.random() * 10 - 5,
-		z: Math.random() * globalConfig.cameraDistance / 1.25,
+		x: Math.round(globalConfig.cameraDistance * side),
+		y: Math.round(Math.random() * 10 - 5),
+		z: Math.round(Math.random() * globalConfig.cameraDistance / 1.25),
 		vx: side * -1,
 		vy: (Math.random() - 0.5) / 4,
 		vz: (Math.random() - 0.5) / 2,
@@ -227,7 +227,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			}
 		}
 
-		if (Math.random() > 0.9) {
+		if (Math.random() > 0.8) {
 			createBubble();
 		}
 		let speedTimeRatio = (Date.now() - lastFrame) / 16;
