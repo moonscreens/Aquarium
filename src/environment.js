@@ -34,7 +34,7 @@ const newPlaneImage = (url, options = {}) => {
 }
 
 module.exports = (scene, globalConfig) => {
-	scene.background = new THREE.Color(0x167BFF);
+	//scene.background = new THREE.Color(0x167BFF);
 	scene.fog = new THREE.Fog(0x167BFF, globalConfig.cameraDistance / 4, globalConfig.cameraDistance * 1.25);
 
 
