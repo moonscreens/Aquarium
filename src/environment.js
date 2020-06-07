@@ -43,7 +43,7 @@ const newPlaneImage = (url, options = {}) => {
 
 module.exports = (scene, globalConfig) => {
 	//scene.background = new THREE.Color(0x167BFF);
-	scene.fog = new THREE.Fog(0x167BFF, globalConfig.cameraDistance / 4, globalConfig.cameraDistance * 1.25);
+	scene.fog = new THREE.Fog(0x167BFF, globalConfig.cameraDistance / 3, globalConfig.cameraDistance * 2);
 
 
 	const ambiLight = new THREE.AmbientLight(0x222222);
@@ -66,7 +66,7 @@ module.exports = (scene, globalConfig) => {
 
 	scene.add(directionalLight);
 
-	const weeds = new Array(60)
+	const weeds = new Array(30)
 	for (let index = 0; index < weeds.length; index++) {
 		const seaweedMesh = new THREE.Mesh(seaWeedGeometry, seaWeedMaterial)
 
@@ -82,7 +82,7 @@ module.exports = (scene, globalConfig) => {
 
 		group.position.x = Math.round(Math.random()*60 - 30);
 		const zrand = Math.random();
-		group.position.z = Math.round((zrand*zrand)*30);
+		group.position.z = Math.round((zrand*zrand*zrand)*30);
 		scene.add(group);
 		weeds[index] = group;
 	}
