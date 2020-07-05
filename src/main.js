@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import Chat from 'twitch-chat';
+import Chat from 'twitch-chat-emotes';
 
 const startTime = Date.now();
 
@@ -19,7 +19,7 @@ const ChatInstance = new Chat({
 
 const emoteTextures = {};
 const pendingEmoteArray = [];
-ChatInstance.dispatch = (e) => {
+ChatInstance.on("emotes", (e) => {
 	const output = { emotes: [] };
 	for (let index = 0; index < Math.min(7, e.emotes.length); index++) {
 		const emote = e.emotes[index];
@@ -30,7 +30,7 @@ ChatInstance.dispatch = (e) => {
 		output.emotes.push(emote);
 	}
 	pendingEmoteArray.push(output);
-}
+});
 
 const setupEnvironment = require('./environment.js');
 

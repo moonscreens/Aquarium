@@ -5307,6 +5307,14 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
+twitch-chat-emotes@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/twitch-chat-emotes/-/twitch-chat-emotes-0.1.7.tgz#4290340146c878bdc15b888803e66e829cae07b5"
+  integrity sha512-1D8kZIZ+ZKgmV6At0Dq2coAyYUPpaI8be939JnJar8sKg5Sloj8Mh5GrA05JYHJ3AxrHDSYI3X/oDH81Wa/Lsg==
+  dependencies:
+    express "^4.17.1"
+    tmi.js "^1.5.0"
+
 "twitch-chat@github:CalebBabin/twitch-chat":
   version "0.1.5"
   resolved "https://codeload.github.com/CalebBabin/twitch-chat/tar.gz/6aba76bdf2160f82ed9c22df41a0aaf90f5d7079"
