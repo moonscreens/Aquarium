@@ -1,4 +1,28 @@
+import * as PIXI from 'pixi.js'
 import Chat from 'twitch-chat-emotes';
+
+const app = new PIXI.Application({
+	transparent: true,
+	autoResize: true,
+});
+
+function resize() {
+	app.renderer.resize(window.innerWidth, window.innerHeight);
+}
+
+function init() {
+	document.body.appendChild(app.view);
+
+	window.addEventListener('resize', resize);
+	resize();
+}
+
+let lastFrame = Date.now();
+function draw() {
+	requestAnimationFrame(draw);
+	const delta = (Date.now() - lastFrame) / 1000;
+	lastFrame = Date.now();
+}
 
 const startTime = Date.now();
 
@@ -69,17 +93,4 @@ const bubbleImage = require('./bubble.png')
 window.addEventListener('DOMContentLoaded', () => {
 	init();
 	draw();
-
-	function init() {
-		window.addEventListener('resize', () => {
-
-		})
-	}
-
-	let lastFrame = Date.now();
-	function draw() {
-		requestAnimationFrame(draw);
-		const delta = (Date.now() - lastFrame)/1000;
-		lastFrame = Date.now();
-	}
 })

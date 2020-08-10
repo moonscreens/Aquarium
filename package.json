@@ -21,6 +21,7 @@
 	"dependencies": {
 		"js": "^0.1.0",
 		"parcel": "^1.12.4",
+		"pixi.js": "^5.3.3",
 		"sass": "^1.26.3",
 		"twitch-chat-emotes": "^0.1.7"
 	}
