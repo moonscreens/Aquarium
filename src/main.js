@@ -25,6 +25,7 @@ function init() {
 	resize();
 
 	setInterval(spawnBubbles, 7000);
+	setInterval(spawnBubbles, 10000);
 	setTimeout(spawnBubbles, 1000);
 }
 
@@ -33,16 +34,18 @@ const spawnBubbles = () => {
 	const x = Math.random() * window.innerWidth;
 	const bubbleCount = Math.floor(Math.random() * 10);
 
+	let offset = 0;
 	for (let index = 0; index < bubbleCount; index++) {
 		const thisBubbleScale = 1 - (index) / bubbleCount;
 
 		bubbles.push(
 			new Bubble(
 				x,
-				window.innerHeight + index * 100,
-				thisBubbleScale*config.bubbleScale,
+				window.innerHeight + offset,
+				thisBubbleScale * config.bubbleScale,
 			)
 		);
+		offset += (100 * Math.random() + 50) * (thisBubbleScale * config.bubbleScale * 2);
 		app.stage.addChild(bubbles[bubbles.length - 1].sprite)
 	}
 }
