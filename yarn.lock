@@ -1650,6 +1650,11 @@ browserslist@^4.0.0, browserslist@^4.1.0, browserslist@^4.12.0, browserslist@^4.
     node-releases "^1.1.53"
     pkg-up "^2.0.0"
 
+bubble@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/bubble/-/bubble-0.1.0.tgz#6f61365e3e2a653e40dcc0fabcb44ff14a74fd03"
+  integrity sha1-b2E2Xj4qZT5A3MD6vLRP8Up0/QM=
+
 buffer-equal@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/buffer-equal/-/buffer-equal-0.0.1.tgz#91bc74b11ea405bc916bc6aa908faafa5b4aac4b"

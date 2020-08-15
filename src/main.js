@@ -1,27 +1,62 @@
 import * as PIXI from 'pixi.js'
 import Chat from 'twitch-chat-emotes';
+import Bubble from './bubble';
+
+const config = {
+	bubbleScale: 0.3,
+}
 
 const app = new PIXI.Application({
 	transparent: true,
-	autoResize: true,
+	autoResize: false,
 });
 
 function resize() {
-	app.renderer.resize(window.innerWidth, window.innerHeight);
+	app.renderer.resize(
+		window.innerWidth,
+		window.innerHeight);
 }
 
 function init() {
 	document.body.appendChild(app.view);
+	app.ticker.add(draw);
 
 	window.addEventListener('resize', resize);
 	resize();
+
+	setInterval(spawnBubbles, 7000);
+	setTimeout(spawnBubbles, 1000);
+}
+
+const bubbles = [];
+const spawnBubbles = () => {
+	const x = Math.random() * window.innerWidth;
+	const bubbleCount = Math.floor(Math.random() * 10);
+
+	for (let index = 0; index < bubbleCount; index++) {
+		const thisBubbleScale = 1 - (index) / bubbleCount;
+
+		bubbles.push(
+			new Bubble(
+				x,
+				window.innerHeight + index * 100,
+				thisBubbleScale*config.bubbleScale,
+			)
+		);
+		app.stage.addChild(bubbles[bubbles.length - 1].sprite)
+	}
 }
 
 let lastFrame = Date.now();
-function draw() {
-	requestAnimationFrame(draw);
-	const delta = (Date.now() - lastFrame) / 1000;
-	lastFrame = Date.now();
+function draw(delta) {
+	for (let index = bubbles.length - 1; index >= 0; index--) {
+		bubbles[index].tick(delta);
+
+		if (bubbles[index].sprite.y < -100) {
+			app.stage.removeChild(bubbles[index].sprite)
+			bubbles.splice(index, 1);
+		}
+	}
 }
 
 const startTime = Date.now();
@@ -88,7 +123,6 @@ for (let index = 0; index < eelImages.length; index++) {
 	eelImages[index].src = eelImageSrc[index];
 }
 
-const bubbleImage = require('./bubble.png')
 
 window.addEventListener('DOMContentLoaded', () => {
 	init();
