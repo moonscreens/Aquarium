@@ -24,9 +24,14 @@ function init() {
 	window.addEventListener('resize', resize);
 	resize();
 
-	setInterval(spawnBubbles, 7000);
-	setInterval(spawnBubbles, 10000);
-	setTimeout(spawnBubbles, 1000);
+	bubbleTimeout();
+	setTimeout(bubbleTimeout, 3000);
+	setTimeout(bubbleTimeout, 5000);
+}
+
+const bubbleTimeout = () => {
+	spawnBubbles();
+	setTimeout(bubbleTimeout, Math.random()*10000 + 2500)
 }
 
 const bubbles = [];
