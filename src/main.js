@@ -23,12 +23,12 @@ function resize() {
 	centerContainer.x = Math.floor(window.innerWidth / 2);
 	centerContainer.y = Math.floor(window.innerHeight / 2);
 
-	const weedSize = window.innerWidth/weedCount/2;
+	const weedSize = window.innerWidth/weedCount/3;
 	const weedScale = weedSize/96;
 	console.log(weedSize, weedScale);
 
 	for (let index = 0; index < weeds.length; index++) {
-		let ratio = index/weedCount;
+		let ratio = Math.random();
 		if (ratio > 0.5) {
 			ratio = 1 - (ratio-0.5)*2;
 			ratio = ratio*ratio/2+0.5;
@@ -42,7 +42,7 @@ function resize() {
 		const weed = weeds[index];
 		weed.sprite.scale.x = weedScale;
 		weed.sprite.scale.y = weedScale;
-		weed.sprite.x = (window.innerWidth*ratio)*1.25 - window.innerWidth*0.125;
+		weed.sprite.x = (window.innerWidth*ratio)*1.2 - window.innerWidth*0.1;
 		weed.sprite.y = window.innerHeight*1.25;
 	}
 }
