@@ -1,4 +1,4 @@
-import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js';
 
 const bubbleTexture = PIXI.Texture.from(require('./bubble.png'));
 
@@ -14,7 +14,7 @@ class Bubble {
 		this.sprite.scale.x = scale;
 		this.sprite.scale.y = scale;
 
-		this.speedScale = Math.random()/2 + 0.75
+		this.speedScale = Math.random() / 2 + 0.75
 
 		this.random = Math.random();
 		this.r2 = Date.now() * Math.random();

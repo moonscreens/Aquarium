@@ -1,20 +1,50 @@
-import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js';
 import Chat from 'twitch-chat-emotes';
 import Bubble from './bubble';
+import Seaweed from './seaweed';
 
 const config = {
 	bubbleScale: 0.3,
-}
+};
 
 const app = new PIXI.Application({
 	transparent: true,
 	autoResize: false,
 });
 
+const centerContainer = new PIXI.Container();
+app.stage.addChild(centerContainer);
+
 function resize() {
 	app.renderer.resize(
 		window.innerWidth,
 		window.innerHeight);
+
+	centerContainer.x = Math.floor(window.innerWidth / 2);
+	centerContainer.y = Math.floor(window.innerHeight / 2);
+
+	const weedSize = window.innerWidth/weedCount/2;
+	const weedScale = weedSize/96;
+	console.log(weedSize, weedScale);
+
+	for (let index = 0; index < weeds.length; index++) {
+		let ratio = index/weedCount;
+		if (ratio > 0.5) {
+			ratio = 1 - (ratio-0.5)*2;
+			ratio = ratio*ratio/2+0.5;
+			ratio = 1 - ratio + 0.5;
+		} else {
+			ratio = ratio*2;
+			ratio = ratio*ratio;
+			ratio = ratio/2;
+		}
+
+		const weed = weeds[index];
+		weed.sprite.scale.x = weedScale;
+		weed.sprite.scale.y = weedScale;
+		weed.sprite.x = (window.innerWidth*ratio)*1.25 - window.innerWidth*0.125;
+		weed.sprite.y = window.innerHeight*1.25;
+	}
 }
 
 function init() {
@@ -31,7 +61,7 @@ function init() {
 
 const bubbleTimeout = () => {
 	spawnBubbles();
-	setTimeout(bubbleTimeout, Math.random()*10000 + 2500)
+	setTimeout(bubbleTimeout, Math.random() * 10000 + 2500);
 }
 
 const bubbles = [];
@@ -55,7 +85,14 @@ const spawnBubbles = () => {
 	}
 }
 
-let lastFrame = Date.now();
+const weedCount = 12;
+const weeds = [];
+for (let index = 0; index < weedCount; index++) {
+	const weed = new Seaweed()
+	weeds.push(weed);
+	app.stage.addChild(weed.sprite);
+}
+
 function draw(delta) {
 	for (let index = bubbles.length - 1; index >= 0; index--) {
 		bubbles[index].tick(delta);
@@ -64,6 +101,10 @@ function draw(delta) {
 			app.stage.removeChild(bubbles[index].sprite)
 			bubbles.splice(index, 1);
 		}
+	}
+	for (let index = 0; index < weeds.length; index++) {
+		const weed = weeds[index];
+		weed.tick(delta);
 	}
 }
 
@@ -86,7 +127,8 @@ const ChatInstance = new Chat({
 const emoteTextures = {};
 const pendingEmoteArray = [];
 ChatInstance.on("emotes", (e) => {
-	/*const output = { emotes: [] };
+	/*
+	const output = { emotes: [] };
 	for (let index = 0; index < Math.min(7, e.emotes.length); index++) {
 		const emote = e.emotes[index];
 		if (!emoteTextures[emote.material.id]) {
@@ -95,7 +137,8 @@ ChatInstance.on("emotes", (e) => {
 		emote.texture = emoteTextures[emote.material.id];
 		output.emotes.push(emote);
 	}
-	pendingEmoteArray.push(output);*/
+	pendingEmoteArray.push(output);
+	*/
 });
 
 const eelImageSrc = [
