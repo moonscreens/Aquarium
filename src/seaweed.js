@@ -12,7 +12,7 @@ class Seaweed {
     }
 
     tick(delta) {
-        this.sprite.rotation = Math.sin(Date.now() / 2000 + (this.sprite.x/window.innerWidth)*1.5)/10;
+        this.sprite.rotation = Math.sin(Date.now() / 2000 + (this.sprite.x/window.innerWidth)*3)/10;
     }
 }
 

@@ -5,6 +5,8 @@ import Seaweed from './seaweed';
 
 const config = {
 	bubbleScale: 0.3,
+	weed_count: 35,
+	weed_height: 1,
 };
 
 const app = new PIXI.Application({
@@ -23,13 +25,13 @@ function resize() {
 	centerContainer.x = Math.floor(window.innerWidth / 2);
 	centerContainer.y = Math.floor(window.innerHeight / 2);
 
-	const weedSize = window.innerWidth/weedCount/3;
-	const weedScale = weedSize/96;
-	console.log(weedSize, weedScale);
+	const weedSize = window.innerHeight*config.weed_height;
+	const weedScale = weedSize/1750;
 
 	for (let index = 0; index < weeds.length; index++) {
 		let ratio = Math.random();
-		if (ratio > 0.5) {
+		let scaleMultiplier = Math.random()/2 + 0.5;
+		/*if (ratio > 0.5) {
 			ratio = 1 - (ratio-0.5)*2;
 			ratio = ratio*ratio/2+0.5;
 			ratio = 1 - ratio + 0.5;
@@ -37,13 +39,13 @@ function resize() {
 			ratio = ratio*2;
 			ratio = ratio*ratio;
 			ratio = ratio/2;
-		}
+		}*/
 
 		const weed = weeds[index];
-		weed.sprite.scale.x = weedScale;
-		weed.sprite.scale.y = weedScale;
+		weed.sprite.scale.x = weedScale*scaleMultiplier;
+		weed.sprite.scale.y = weedScale*scaleMultiplier;
 		weed.sprite.x = (window.innerWidth*ratio)*1.2 - window.innerWidth*0.1;
-		weed.sprite.y = window.innerHeight*1.25;
+		weed.sprite.y = window.innerHeight;
 	}
 }
 
@@ -85,9 +87,8 @@ const spawnBubbles = () => {
 	}
 }
 
-const weedCount = 12;
 const weeds = [];
-for (let index = 0; index < weedCount; index++) {
+for (let index = 0; index < config.weed_count; index++) {
 	const weed = new Seaweed()
 	weeds.push(weed);
 	app.stage.addChild(weed.sprite);
