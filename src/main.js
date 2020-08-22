@@ -12,6 +12,8 @@ const config = {
 const app = new PIXI.Application({
 	transparent: true,
 	autoResize: false,
+	antialias: true,
+	resolution: 2,
 });
 
 const centerContainer = new PIXI.Container();
@@ -26,7 +28,7 @@ function resize() {
 	centerContainer.y = Math.floor(window.innerHeight / 2);
 
 	const weedSize = window.innerHeight*config.weed_height;
-	const weedScale = weedSize/1750;
+	const weedScale = weedSize/8924;
 
 	for (let index = 0; index < weeds.length; index++) {
 		let ratio = Math.random();
