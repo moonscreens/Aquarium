@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 
-const seaweedTexture = PIXI.Texture.from(require('./seaweed1x.png'));
+const seaweedTexture = PIXI.Texture.from(require('./seaweed2x.png'));
 
 class Seaweed {
     constructor(x = null, y = null) {
