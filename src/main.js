@@ -122,7 +122,7 @@ function draw() {
 			);
 			ctx.restore();
 		}
-		if (group.y < -emote_size * devicePixelRatio) {
+		if (group.y < -emote_size * devicePixelRatio * group.emotes.length) {
 			emotes.splice(i, 1);
 		}
 
