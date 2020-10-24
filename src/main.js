@@ -1,59 +1,22 @@
-import * as PIXI from 'pixi.js';
 import Chat from 'twitch-chat-emotes';
-import Bubble from './bubble';
-import Seaweed from './seaweed';
 
-const config = {
-	bubbleScale: 0.3,
-	weed_count: 35,
-	weed_height: 1,
-};
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
 
-const app = new PIXI.Application({
-	transparent: true,
-	autoResize: false,
-	antialias: true,
-	resolution: 2,
-});
 
-const centerContainer = new PIXI.Container();
-app.stage.addChild(centerContainer);
+const bubble_size = 25;
+const emote_size = 50;
+
+const bubble_img = new Image();
+bubble_img.src = require('./bubble.png');
 
 function resize() {
-	app.renderer.resize(
-		window.innerWidth,
-		window.innerHeight);
-
-	centerContainer.x = Math.floor(window.innerWidth / 2);
-	centerContainer.y = Math.floor(window.innerHeight / 2);
-
-	const weedSize = window.innerHeight*config.weed_height;
-	const weedScale = weedSize/8924;
-
-	for (let index = 0; index < weeds.length; index++) {
-		let ratio = Math.random();
-		let scaleMultiplier = Math.random()/2 + 0.5;
-		/*if (ratio > 0.5) {
-			ratio = 1 - (ratio-0.5)*2;
-			ratio = ratio*ratio/2+0.5;
-			ratio = 1 - ratio + 0.5;
-		} else {
-			ratio = ratio*2;
-			ratio = ratio*ratio;
-			ratio = ratio/2;
-		}*/
-
-		const weed = weeds[index];
-		weed.sprite.scale.x = weedScale*scaleMultiplier;
-		weed.sprite.scale.y = weedScale*scaleMultiplier;
-		weed.sprite.x = (window.innerWidth*ratio)*1.2 - window.innerWidth*0.1;
-		weed.sprite.y = window.innerHeight;
-	}
+	canvas.width = window.innerWidth * devicePixelRatio;
+	canvas.height = window.innerHeight * devicePixelRatio;
 }
 
 function init() {
-	document.body.appendChild(app.view);
-	app.ticker.add(draw);
+	document.body.appendChild(canvas);
 
 	window.addEventListener('resize', resize);
 	resize();
@@ -70,48 +33,105 @@ const bubbleTimeout = () => {
 
 const bubbles = [];
 const spawnBubbles = () => {
-	const x = Math.random() * window.innerWidth;
+	const x = Math.random() * canvas.width;
 	const bubbleCount = Math.floor(Math.random() * 10);
+	const r = Math.random() * 7;
+	const speed = Math.random() + 0.5;
 
 	let offset = 0;
 	for (let index = 0; index < bubbleCount; index++) {
 		const thisBubbleScale = 1 - (index) / bubbleCount;
-
-		bubbles.push(
-			new Bubble(
-				x,
-				window.innerHeight + offset,
-				thisBubbleScale * config.bubbleScale,
-			)
-		);
-		offset += (100 * Math.random() + 50) * (thisBubbleScale * config.bubbleScale * 2);
-		app.stage.addChild(bubbles[bubbles.length - 1].sprite)
+		bubbles.push({
+			y: canvas.height + offset,
+			x,
+			index,
+			size: thisBubbleScale,
+			r,
+			speed,
+		});
+		offset += (100 * Math.random() + 50) * (thisBubbleScale * 2);
 	}
 }
 
-const weeds = [];
-for (let index = 0; index < config.weed_count; index++) {
-	const weed = new Seaweed()
-	weeds.push(weed);
-	app.stage.addChild(weed.sprite);
-}
+const emotes = [];
+let last_frame = Date.now();
+function draw() {
+	const delta = (Date.now() - last_frame) / 1000;
+	last_frame = Date.now();
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-function draw(delta) {
 	for (let index = bubbles.length - 1; index >= 0; index--) {
-		bubbles[index].tick(delta);
+		bubbles[index].y -= delta * 200 * bubbles[index].speed;
 
-		if (bubbles[index].sprite.y < -100) {
-			app.stage.removeChild(bubbles[index].sprite)
+		ctx.drawImage(
+			bubble_img,
+			bubbles[index].x + Math.sin(bubbles[index].y / 100 + bubbles[index].index / 4 + bubbles[index].r) * (bubble_size * devicePixelRatio / 2),
+			bubbles[index].y,
+			bubble_size * devicePixelRatio * bubbles[index].size,
+			bubble_size * devicePixelRatio * bubbles[index].size,
+		);
+
+		if (bubbles[index].y < -bubble_size * devicePixelRatio) {
 			bubbles.splice(index, 1);
 		}
 	}
-	for (let index = 0; index < weeds.length; index++) {
+
+	/*for (let index = 0; index < weeds.length; index++) {
 		const weed = weeds[index];
 		weed.tick(delta);
+	}*/
+
+	for (let i = pendingEmoteArray.length - 1; i >= 0; i--) {
+		const element = pendingEmoteArray.splice(i, 1)[0].emotes;
+		const group = {
+			emotes: [],
+			y: canvas.height + element.length * emote_size * devicePixelRatio,
+			x: Math.random() * canvas.width,
+			spawn: Date.now(),
+			r: Math.random(),
+			speed: Math.random() + 0.5,
+		};
+		for (let o = 0; o < element.length; o++) {
+			const emote = emoteTextures[element[o].material.id];
+			group.emotes.push(emote);
+		}
+
+		emotes.push(group);
 	}
+	for (let i = emotes.length - 1; i >= 0; i--) {
+		const group = emotes[i];
+		group.y -= delta * 150 * group.speed;
+		ctx.translate(group.x, group.y);
+		if (group.emotes.length > 1) ctx.rotate(Math.PI / 2);
+		for (let o = 0; o < group.emotes.length; o++) {
+			const element = group.emotes[o];
+			const sinMath = Date.now() / 1000 + group.r * 10 - (o);
+			const sin = Math.sin(sinMath);
+			ctx.save();
+			ctx.translate(
+				group.emotes.length > 1 ? emote_size * devicePixelRatio * o : (sin * emote_size * devicePixelRatio),
+				group.emotes.length > 1 ? sin * emote_size * devicePixelRatio * 0.5 : 0
+			);
+			if (group.emotes.length > 1) ctx.rotate(-Math.sin(sinMath + Math.PI / 2) / 2);
+			ctx.drawImage(
+				element,
+				-emote_size * devicePixelRatio / 2,
+				-emote_size * devicePixelRatio / 2,
+				emote_size * devicePixelRatio,
+				emote_size * devicePixelRatio
+			);
+			ctx.restore();
+		}
+		if (group.y < -emote_size * devicePixelRatio) {
+			emotes.splice(i, 1);
+		}
+
+		ctx.setTransform(1, 0, 0, 1, 0, 0);
+	}
+
+	window.requestAnimationFrame(draw);
 }
 
-const startTime = Date.now();
 
 let channels = ['moonmoon', 'antimattertape'];
 const query_vars = {};
@@ -125,23 +145,22 @@ if (query_vars.channels) {
 const ChatInstance = new Chat({
 	channels,
 	duplicateEmoteLimit: 5,
+	//duplicateEmoteLimit_pleb: 5,
 })
 
 const emoteTextures = {};
 const pendingEmoteArray = [];
 ChatInstance.on("emotes", (e) => {
-	/*
 	const output = { emotes: [] };
 	for (let index = 0; index < Math.min(7, e.emotes.length); index++) {
 		const emote = e.emotes[index];
 		if (!emoteTextures[emote.material.id]) {
-			emoteTextures[emote.material.id] = new THREE.CanvasTexture(emote.material.canvas);
+			emoteTextures[emote.material.id] = emote.material.canvas;
 		}
 		emote.texture = emoteTextures[emote.material.id];
 		output.emotes.push(emote);
 	}
 	pendingEmoteArray.push(output);
-	*/
 });
 
 const eelImageSrc = [
