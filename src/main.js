@@ -3,7 +3,6 @@ import Chat from 'twitch-chat-emotes';
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
-
 const bubble_size = 25;
 const emote_size = 50;
 

@@ -7,10 +7,44 @@
 	<title>Aquarium</title>
 	<link rel="stylesheet" href="main.scss">
 	<script src="main.js"></script>
+	<script src="webgl.js"></script>
+
+	<script type='glsl/vertex'>
+		attribute vec2 coords;
+		
+		void main(void) {
+			gl_Position = vec4(coords.xy, 0.0, 1.0);
+		}
+	</script>
+
+	<script type='glsl/fragment'>
+		precision highp float;
+
+		uniform float width;
+		uniform float height;
+		uniform float u_time;
+
+		void main() {
+			vec2 normalized_position = gl_FragCoord.xy / vec2(width, height);
+
+			float sin1 = sin(gl_FragCoord.x / 150.0 + u_time) / 2.0 + 0.5;
+			float sin2 = sin(gl_FragCoord.x / 200.0 - (u_time + 1.0) / 2.3) / 2.0 + 0.5;
+
+			float brightness = sin1 * sin2;
+
+			brightness = brightness * brightness;
+
+			brightness = brightness * normalized_position.y;
+
+			gl_FragColor = vec4(
+				brightness
+			);
+		}
+	</script>
 </head>
 
 <body>
-	
+
 </body>
 
 </html>
