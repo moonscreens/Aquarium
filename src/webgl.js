@@ -45,7 +45,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		gl.viewport(0, 0, w, h);
 		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-		gl.uniform1f(timeLocation, time / 1000);
+		gl.uniform1f(timeLocation, time / 2000);
 		gl.uniform1f(widthLocation, h);
 		gl.uniform1f(heightLocation, w);
 		gl.useProgram(pid);
