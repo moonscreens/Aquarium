@@ -35,12 +35,12 @@
 			float sin3 = sin(x / 150.0 - u_time * 0.65 + 2.5) / 2.0 + 0.5;
 			float sin4 = sin(x / 200.0 + (u_time * 0.65 + 1.7) / 2.3) / 2.0 + 0.5;
 
-			float sin_neg = floor(sin(x / 600.0 + u_time * 0.13) / 2.0 + 1.0) / 2.0;
-			float sin_neg2 = floor(sin(x / 300.0 + u_time * 0.25) / 2.0 + 1.0) / 2.0;
+			float sin_neg = floor(sin(x / 600.0 + u_time * 0.13) / 2.0 + 1.0);
+			float sin_neg2 = floor(sin(x / 300.0 + u_time * 0.25) / 2.0 + 1.0);
 
 			float brightness = max(sin1 * sin2, sin3 * sin4);
 
-			brightness = (brightness * brightness) * (npos.y * npos.y) - (sin_neg + sin_neg2)/4.0;
+			brightness = (brightness * brightness) * (npos.y * npos.y) - (sin_neg + sin_neg2)/10.0;
 			brightness = brightness * 0.75;
 			gl_FragColor = vec4(
 				brightness
