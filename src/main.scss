@@ -38,6 +38,8 @@ body {
 canvas {
     background: transparent;
 
+    z-index: 12;
+
     &.eel {
         height: auto;
         width: 28%;

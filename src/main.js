@@ -84,10 +84,11 @@ function draw() {
 	for (let i = pendingEmoteArray.length - 1; i >= 0; i--) {
 		const element = pendingEmoteArray.splice(i, 1)[0].emotes;
 		let x = Math.random();
+		x = x * x * x * x * x * x;
 		if (Math.random() < 0.5) {
-			x = x * x * canvas.width / 2;
+			x = (x) * canvas.width / 2 + canvas.width * 0.1;
 		} else {
-			x = (canvas.width / 2) + (1 - x * x) * canvas.width / 2;
+			x = (canvas.width / 2) + (1 - x) * (canvas.width / 2.75);
 		}
 
 		const group = {
