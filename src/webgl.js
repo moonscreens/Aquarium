@@ -4,8 +4,8 @@ window.addEventListener('DOMContentLoaded', () => {
 	document.body.appendChild(canvas);
 
 	function resize() {
-		canvas.width = window.innerWidth * devicePixelRatio;
-		canvas.height = window.innerHeight * devicePixelRatio;
+		canvas.width = window.innerWidth / 2;
+		canvas.height = window.innerHeight / 2;
 		h = gl.drawingBufferHeight;
 		w = gl.drawingBufferWidth;
 	}

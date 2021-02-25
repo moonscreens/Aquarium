@@ -5,6 +5,7 @@ const ctx = canvas.getContext('2d');
 
 const bubble_size = 25;
 const emote_size = 50;
+const devicePixelRatio = 1;
 
 const bubble_img = new Image();
 bubble_img.src = require('./bubble.png');
@@ -27,7 +28,7 @@ function init() {
 
 const bubbleTimeout = () => {
 	spawnBubbles();
-	setTimeout(bubbleTimeout, Math.random() * 10000 + 2500);
+	setTimeout(bubbleTimeout, Math.random() * 5000 + 1000);
 }
 
 const bubbles = [];
@@ -184,19 +185,38 @@ const eelImageSrc = [
 	require(`./eel/eel_19.png`),
 	require(`./eel/eel_20.png`),
 ];
-
-const eelImages = new Array(20);
+const eelCanvas = document.createElement('canvas');
+eelCanvas.classList.add('eel');
+const eelContext = eelCanvas.getContext('2d');
+const eelImages = new Array(eelImageSrc.length);
 for (let index = 0; index < eelImages.length; index++) {
 	eelImages[index] = new Image();
-	/*eelImages[index].addEventListener('load', ()=>{
+	eelImages[index].addEventListener('load', () => {
 		if (eelCanvas.height < eelImages[index].height) eelCanvas.height = Math.max(eelCanvas.height, eelImages[index].height);
 		if (eelCanvas.width < eelImages[index].width) eelCanvas.width = Math.max(eelCanvas.width, eelImages[index].width);
-	});*/
+	});
 	eelImages[index].src = eelImageSrc[index];
 }
 
+let eelIndex = 0;
+let eelDirection = 1;
+setInterval(() => {
+	if (eelImages[eelIndex] && eelImages[eelIndex].complete) {
+		eelContext.clearRect(0, 0, eelCanvas.width, eelCanvas.height);
+		eelContext.drawImage(eelImages[eelIndex], 0, 0);
+	}
+
+	eelIndex += eelDirection;
+	if (eelIndex >= eelImages.length || eelIndex < 0) {
+		eelDirection *= -1;
+		eelIndex += eelDirection;
+	}
+}, 60);
+
+
 
 window.addEventListener('DOMContentLoaded', () => {
+	document.body.appendChild(eelCanvas);
 	init();
 	draw();
 })

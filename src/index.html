@@ -32,11 +32,11 @@
 			float x = gl_FragCoord.x - width * npos.y * 0.5;
 
 			// sin1, sin2, sin3, and sin4 add the soft light shaft effects
-			float sin1 = sin(x / 150.0 + u_time) / 2.0 + 0.5;
-			float sin2 = sin(x / 200.0 - (u_time + 1.0) / 2.3) / 2.0 + 0.5;
+			float sin1 = sin(x / 75.0 + u_time) / 2.0 + 0.5;
+			float sin2 = sin(x / 100.0 - (u_time + 1.0) / 2.3) / 2.0 + 0.5;
 
-			float sin3 = sin(x / 150.0 - u_time * 0.65 + 2.5) / 2.0 + 0.5;
-			float sin4 = sin(x / 200.0 + (u_time * 0.65 + 1.7) / 2.3) / 2.0 + 0.5;
+			float sin3 = sin(x / 75.0 - u_time * 0.65 + 2.5) / 2.0 + 0.5;
+			float sin4 = sin(x / 100.0 + (u_time * 0.65 + 1.7) / 2.3) / 2.0 + 0.5;
 
 			// sin_neg and sin_neg2 add the hard edges to the soft light
 			float sin_neg = floor(sin(x / 600.0 + u_time * 0.13) / 2.0 + 1.0);
@@ -53,7 +53,11 @@
 </head>
 
 <body>
-
+	<img class="layer1" src="./layer1.png">
+	<img class="layer2" src="./layer2.png">
+	<img class="layer3" src="./layer3.png">
+	<img class="layer4" src="./layer4.png">
+	<img class="layer5" src="./layer5.png">
 </body>
 
 </html>
