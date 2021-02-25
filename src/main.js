@@ -83,10 +83,17 @@ function draw() {
 
 	for (let i = pendingEmoteArray.length - 1; i >= 0; i--) {
 		const element = pendingEmoteArray.splice(i, 1)[0].emotes;
+		let x = Math.random();
+		if (Math.random() < 0.5) {
+			x = x * x * canvas.width / 2;
+		} else {
+			x = (canvas.width / 2) + (1 - x * x) * canvas.width / 2;
+		}
+
 		const group = {
 			emotes: [],
 			y: canvas.height + element.length * emote_size * devicePixelRatio,
-			x: Math.random() * canvas.width,
+			x,
 			spawn: Date.now(),
 			r: Math.random(),
 			speed: Math.random() + 0.5,
