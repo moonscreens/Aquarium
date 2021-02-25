@@ -52,7 +52,7 @@ canvas {
 }
 
 .background-canvas {
-    mix-blend-mode: multiply;
+    mix-blend-mode: lighten;
     z-index: 1000;
 }
 .layer1,
