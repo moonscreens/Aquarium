@@ -132,6 +132,8 @@ ChatInstance.listen((emotes) => {
 ** Image layers
 */
 
+scene.fog = new THREE.Fog(0x09356b, 10, 20);
+
 import layer0Url from "./img/layer0.png";
 import layer1Url from "./img/layer1.png";
 import layer2Url from "./img/layer2.png";
