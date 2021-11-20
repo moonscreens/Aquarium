@@ -114,13 +114,28 @@ function draw() {
 			eelContext.drawImage(eelFrames[Math.floor(eelFrame)], 0, 0);
 			eelTexture.needsUpdate = true;
 
-			Eel.position.x = ((Math.sin(Date.now() / 1000) - 1)) * 5;
+			const p = (Date.now() - Eel.timestamp) / Eel.lifespan;
+			const destination = 10;
+			if (p < 0.25) {
+				Eel.position.x = -destination + easeInOut(p / 0.25) * destination;
+			} else if (p > 0.75) {
+				Eel.position.x = -destination + easeInOut(1 - (p - 0.75) / 0.25) * destination;
+			} else {
+				Eel.position.x = -destination + destination;
+			}
+
+		} else {
+			Eel.position.x = -10;
 		}
 	} catch (e) { }
 
 	renderer.render(scene, camera);
 	if (query_vars.stats) stats.end();
 };
+
+const easeInOut = (t) => {
+	return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
 
 
 /*
@@ -342,9 +357,12 @@ scene.add(EelGroup);
 let eelFrame = 0;
 
 Eel.active = false;
+Eel.lifespan = 10000;
+
 setInterval(() => {
 	Eel.active = true;
+	Eel.timestamp = Date.now();
 	setTimeout(() => {
 		Eel.active = false;
-	}, 1000);
-}, 30000);
+	}, Eel.lifespan);
+}, 60000);
