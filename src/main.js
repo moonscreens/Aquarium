@@ -132,7 +132,11 @@ ChatInstance.listen((emotes) => {
 ** Image layers
 */
 
-scene.fog = new THREE.Fog(0x09356b, 10, 20);
+const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+sunLight.position.set(-0.1, 1, 0);
+scene.add(sunLight);
+
+scene.fog = new THREE.Fog(0x167bff, 10, 20);
 
 import layer0Url from "./img/layer0.png";
 import layer1Url from "./img/layer1.png";
@@ -165,12 +169,17 @@ planes[3].position.y += 0.4;
 
 
 import seaWeedMat from "./seaweedmat";
+const seaWeedMats = Array(5);
+for (let index = 0; index < seaWeedMats.length; index++) {
+	seaWeedMats[index] = seaWeedMat();
+}
 
-for (let index = 0; index < 20; index++) {
-	const seaWeed = new THREE.Mesh(new THREE.PlaneGeometry(389, 8924, 128, 128), seaWeedMat());
+for (let index = 0; index < 100; index++) {
+	const seaWeed = new THREE.Mesh(new THREE.PlaneGeometry(389, 8924, 128, 128), seaWeedMats[Math.floor(Math.random() * seaWeedMats.length)]);
 	seaWeed.scale.setScalar(0.002);
-	seaWeed.position.z = -10 * Math.random();
+	const r = Math.random();
+	seaWeed.position.z = -10 * (1 - r * r * r * r);
 	seaWeed.position.y = (-Math.random() * 10 - 1) + seaWeed.position.z * 0.6;
-	seaWeed.position.x = (Math.random() * 2 - 1) * 13;
+	seaWeed.position.x = (Math.random() * 2 - 1) * 18;
 	scene.add(seaWeed);
 }

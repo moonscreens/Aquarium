@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import webGLSimplex3DNoise from './simplex3DShaderCode';
-import seaWeedURL from "./img/seaweed2x.png";
+import seaWeedURL from "./img/grass22.png";
 const seaWeedTexture = new THREE.TextureLoader().load(seaWeedURL);
 
 function generateSeaWeedMat() {
