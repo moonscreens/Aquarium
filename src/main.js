@@ -165,7 +165,7 @@ planes[3].position.y += 0.4;
 import seaWeedMat from "./seaweedmat";
 
 for (let index = 0; index < 20; index++) {
-	const seaWeed = new THREE.Mesh(new THREE.PlaneGeometry(389, 8924, 8, 32), seaWeedMat);
+	const seaWeed = new THREE.Mesh(new THREE.PlaneGeometry(389, 8924, 128, 128), seaWeedMat());
 	seaWeed.scale.setScalar(0.002);
 	seaWeed.position.z = -10 * Math.random();
 	seaWeed.position.y = (-Math.random() * 10 - 1) + seaWeed.position.z * 0.6;
