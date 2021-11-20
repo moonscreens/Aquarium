@@ -22,17 +22,16 @@ if (query_vars.channels) {
 }
 
 const ChatInstance = new TwitchChat({
-	// If using planes, consider using MeshBasicMaterial instead of SpriteMaterial
-	materialType: THREE.SpriteMaterial,
+	materialType: THREE.MeshBasicMaterial,
 
 	// Passed to material options
 	materialOptions: {
 		transparent: true,
-		rotation: Math.PI / 2,
 	},
 
 	channels,
 	maximumEmoteLimit: 3,
+	duplicateEmoteLimit: 3,
 })
 
 /*
@@ -81,7 +80,13 @@ function draw() {
 			sceneEmoteArray.splice(index, 1);
 			scene.remove(element);
 		} else {
-			element.update();
+			if (element.children.length > 1) {
+				element.children.forEach((child) => {
+					const time = (Date.now() + element.timestamp) / 500;
+					child.position.x = Math.sin(time + (Math.PI * 0.5) * child.position.y) * 0.5;
+					child.rotation.z = Math.sin(time + (Math.PI * 0.5) * child.position.y + (Math.PI * -0.5)) * 0.5 - (Math.PI * 0.5);
+				})
+			}
 		}
 	}
 	lastFrame = Date.now();
@@ -94,7 +99,7 @@ function draw() {
 		}
 		for (let i = 0; i < group.children.length; i++) {
 			const bubble = group.children[i];
-			bubble.position.x = Math.sin((group.random + Date.now()) / 1000 + i) * 2;
+			bubble.position.x = Math.cos((group.random + Date.now()) / 400 + i) * 0.5;
 		}
 	}
 
@@ -107,18 +112,18 @@ function draw() {
 ** Handle Twitch Chat Emotes
 */
 const sceneEmoteArray = [];
+const emoteGeometry = new THREE.PlaneBufferGeometry(1, 1);
 ChatInstance.listen((emotes) => {
 	const group = new THREE.Group();
 	group.lifespan = 15000;
 	group.timestamp = Date.now();
 
-	let i = 0;
-	emotes.forEach((emote) => {
-		const sprite = new THREE.Sprite(emote.material);
-		sprite.position.y = i;
+	for (let i = 0; i < emotes.length; i++) {
+		const emote = emotes[i];
+		const sprite = new THREE.Mesh(emoteGeometry, emote.material);
+		sprite.position.y = (emotes.length - i) * 0.9;
 		group.add(sprite);
-		i++;
-	})
+	}
 
 	// Set velocity to a random normalized value
 	group.velocity = new THREE.Vector3(
@@ -129,17 +134,6 @@ ChatInstance.listen((emotes) => {
 	group.position.x = (Math.random() * 2 - 1) * 13;
 	group.position.z = Math.random() * -7;
 	group.position.y = -8 + group.position.z * 0.6;
-	const originPos = group.position.clone();
-
-
-	group.update = () => { // called every frame
-		//group.position.x = originPos.x + Math.sin((Date.now() + group.timestamp) / 1000);
-
-		// wiggle group children
-		group.children.forEach((child) => {
-			child.position.x = Math.sin((Date.now() + group.timestamp + child.position.y * 400) / 500) * 0.5;
-		})
-	}
 
 	scene.add(group);
 	sceneEmoteArray.push(group);
@@ -150,6 +144,7 @@ import bubbleTextureUrl from "./img/bubble.png";
 const bubbleMaterial = new THREE.SpriteMaterial({
 	map: new THREE.TextureLoader().load(bubbleTextureUrl),
 	transparent: true,
+	blending: THREE.AdditiveBlending,
 });
 for (let index = 0; index < 100; index++) {
 	const group = new THREE.Group();
@@ -163,8 +158,8 @@ for (let index = 0; index < 100; index++) {
 	const r = Math.ceil(Math.random() * 10);
 	for (let i = 0; i < r; i++) {
 		const sprite = new THREE.Sprite(bubbleMaterial);
-		sprite.position.y = i;
-		sprite.scale.setScalar(i / r / 2);
+		sprite.position.y = i * 0.5;
+		sprite.scale.setScalar(i / r / 3);
 		group.add(sprite);
 	}
 	group.ResetPosition();
