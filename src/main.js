@@ -182,7 +182,7 @@ const sunLight = new THREE.DirectionalLight(0xffffff, 1);
 sunLight.position.set(-0.1, 1, 0);
 scene.add(sunLight);
 
-scene.fog = new THREE.Fog(0x167bff, 10, 20);
+scene.fog = new THREE.Fog(0x167bff, 7, 20);
 
 import layer0Url from "./img/layer0.png";
 import layer1Url from "./img/layer1.png";
@@ -221,11 +221,11 @@ for (let index = 0; index < seaWeedMats.length; index++) {
 }
 
 for (let index = 0; index < 100; index++) {
-	const seaWeed = new THREE.Mesh(new THREE.PlaneGeometry(389, 8924, 128, 128), seaWeedMats[Math.floor(Math.random() * seaWeedMats.length)]);
+	const seaWeed = new THREE.Mesh(new THREE.PlaneGeometry(389, 8924, 4, 16), seaWeedMats[Math.floor(Math.random() * seaWeedMats.length)]);
 	seaWeed.scale.setScalar(0.002);
 	const r = Math.random();
-	seaWeed.position.z = -10 * (1 - r * r * r * r);
+	seaWeed.position.z = -10 * (1 - r) - 2.5;
 	seaWeed.position.y = (-Math.random() * 10 - 1) + seaWeed.position.z * 0.6;
-	seaWeed.position.x = (Math.random() * 2 - 1) * 18;
+	seaWeed.position.x = (Math.random() * 2 - 1) * 20;
 	scene.add(seaWeed);
 }
