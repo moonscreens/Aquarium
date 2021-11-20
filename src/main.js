@@ -86,6 +86,18 @@ function draw() {
 	}
 	lastFrame = Date.now();
 
+	for (let index = 0; index < bubbles.length; index++) {
+		const group = bubbles[index];
+		group.position.y += delta * 2;
+		if (group.position.y > 10) {
+			group.ResetPosition();
+		}
+		for (let i = 0; i < group.children.length; i++) {
+			const bubble = group.children[i];
+			bubble.position.x = Math.sin((group.random + Date.now()) / 1000 + i) * 2;
+		}
+	}
+
 	renderer.render(scene, camera);
 	if (query_vars.stats) stats.end();
 };
@@ -132,6 +144,34 @@ ChatInstance.listen((emotes) => {
 	scene.add(group);
 	sceneEmoteArray.push(group);
 });
+
+const bubbles = [];
+import bubbleTextureUrl from "./img/bubble.png";
+const bubbleMaterial = new THREE.SpriteMaterial({
+	map: new THREE.TextureLoader().load(bubbleTextureUrl),
+	transparent: true,
+});
+for (let index = 0; index < 100; index++) {
+	const group = new THREE.Group();
+	group.ResetPosition = () => {
+		group.position.x = (Math.random() * 2 - 1) * 19;
+		group.position.z = Math.random() * -10;
+		group.position.y = -15 + Math.random() * -10;
+	}
+	group.random = Math.random() * 10000;
+
+	const r = Math.ceil(Math.random() * 10);
+	for (let i = 0; i < r; i++) {
+		const sprite = new THREE.Sprite(bubbleMaterial);
+		sprite.position.y = i;
+		sprite.scale.setScalar(i / r / 2);
+		group.add(sprite);
+	}
+	group.ResetPosition();
+	group.position.y = Math.random() * -20;
+	bubbles.push(group);
+	scene.add(group);
+}
 
 
 /*
