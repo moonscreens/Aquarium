@@ -28,6 +28,7 @@ const ChatInstance = new TwitchChat({
 	// Passed to material options
 	materialOptions: {
 		transparent: true,
+		rotation: Math.PI / 2,
 	},
 
 	channels,
@@ -75,7 +76,7 @@ function draw() {
 
 	for (let index = sceneEmoteArray.length - 1; index >= 0; index--) {
 		const element = sceneEmoteArray[index];
-		element.position.addScaledVector(element.velocity, delta);
+		element.position.y += delta * 2;
 		if (element.timestamp + element.lifespan < Date.now()) {
 			sceneEmoteArray.splice(index, 1);
 			scene.remove(element);
@@ -102,7 +103,7 @@ ChatInstance.listen((emotes) => {
 	let i = 0;
 	emotes.forEach((emote) => {
 		const sprite = new THREE.Sprite(emote.material);
-		sprite.position.x = i;
+		sprite.position.y = i;
 		group.add(sprite);
 		i++;
 	})
@@ -114,13 +115,18 @@ ChatInstance.listen((emotes) => {
 		0
 	);
 	group.position.x = (Math.random() * 2 - 1) * 13;
-	group.position.z = Math.random() * -10;
+	group.position.z = Math.random() * -7;
 	group.position.y = -8 + group.position.z * 0.6;
 	const originPos = group.position.clone();
 
 
 	group.update = () => { // called every frame
-		group.position.x = originPos.x + Math.sin((Date.now() + group.timestamp) / 1000);
+		//group.position.x = originPos.x + Math.sin((Date.now() + group.timestamp) / 1000);
+
+		// wiggle group children
+		group.children.forEach((child) => {
+			child.position.x = Math.sin((Date.now() + group.timestamp + child.position.y * 400) / 500) * 0.5;
+		})
 	}
 
 	scene.add(group);
