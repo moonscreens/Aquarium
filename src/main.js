@@ -103,6 +103,21 @@ function draw() {
 		}
 	}
 
+
+	try {
+		if (Eel.active) {
+			eelContext.clearRect(0, 0, eelCanvas.width, eelCanvas.height);
+			eelFrame += delta * 10;
+			while (eelFrame >= eelFrames.length) {
+				eelFrame -= eelFrames.length;
+			}
+			eelContext.drawImage(eelFrames[Math.floor(eelFrame)], 0, 0);
+			eelTexture.needsUpdate = true;
+
+			Eel.position.x = ((Math.sin(Date.now() / 1000) - 1)) * 5;
+		}
+	} catch (e) { }
+
 	renderer.render(scene, camera);
 	if (query_vars.stats) stats.end();
 };
@@ -209,6 +224,10 @@ planes[3].scale.setScalar(0.0098);
 planes[3].position.y += 0.4;
 
 
+/*
+** seaweed
+*/
+
 import seaWeedMat from "./seaweedmat";
 const seaWeedMats = Array(5);
 for (let index = 0; index < seaWeedMats.length; index++) {
@@ -224,3 +243,108 @@ for (let index = 0; index < 100; index++) {
 	seaWeed.position.x = (Math.random() * 2 - 1) * 20;
 	scene.add(seaWeed);
 }
+
+/*
+** Eel
+*/
+
+// Webpack file loader being annoying, import using AI generated lengthy code because I'm lazy 😎
+import eel1Url from "./img/eel/eel_1.png";
+import eel2Url from "./img/eel/eel_2.png";
+import eel3Url from "./img/eel/eel_3.png";
+import eel4Url from "./img/eel/eel_4.png";
+import eel5Url from "./img/eel/eel_5.png";
+import eel6Url from "./img/eel/eel_6.png";
+import eel7Url from "./img/eel/eel_7.png";
+import eel8Url from "./img/eel/eel_8.png";
+import eel9Url from "./img/eel/eel_9.png";
+import eel10Url from "./img/eel/eel_10.png";
+import eel11Url from "./img/eel/eel_11.png";
+import eel12Url from "./img/eel/eel_12.png";
+import eel13Url from "./img/eel/eel_13.png";
+import eel14Url from "./img/eel/eel_14.png";
+import eel15Url from "./img/eel/eel_15.png";
+import eel16Url from "./img/eel/eel_16.png";
+import eel17Url from "./img/eel/eel_17.png";
+import eel18Url from "./img/eel/eel_18.png";
+import eel19Url from "./img/eel/eel_19.png";
+import eel20Url from "./img/eel/eel_20.png";
+
+const eelFrames = [
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image(),
+];
+
+eelFrames[0].src = eel1Url;
+eelFrames[1].src = eel2Url;
+eelFrames[2].src = eel3Url;
+eelFrames[3].src = eel4Url;
+eelFrames[4].src = eel5Url;
+eelFrames[5].src = eel6Url;
+eelFrames[6].src = eel7Url;
+eelFrames[7].src = eel8Url;
+eelFrames[8].src = eel9Url;
+eelFrames[9].src = eel10Url;
+eelFrames[10].src = eel11Url;
+eelFrames[11].src = eel12Url;
+eelFrames[12].src = eel13Url;
+eelFrames[13].src = eel14Url;
+eelFrames[14].src = eel15Url;
+eelFrames[15].src = eel16Url;
+eelFrames[16].src = eel17Url;
+eelFrames[17].src = eel18Url;
+eelFrames[18].src = eel19Url;
+eelFrames[19].src = eel20Url;
+
+const eelCanvas = document.createElement("canvas");
+eelCanvas.width = 1024;
+eelCanvas.height = 512;
+const eelContext = eelCanvas.getContext("2d");
+
+const eelTexture = new THREE.CanvasTexture(eelCanvas);
+const Eel = new THREE.Mesh(
+	new THREE.PlaneGeometry(eelCanvas.width, eelCanvas.height),
+	new THREE.MeshBasicMaterial({
+		map: eelTexture,
+		transparent: true,
+	}),
+);
+Eel.scale.setScalar(0.009);
+const EelGroup = new THREE.Group();
+EelGroup.add(Eel);
+
+EelGroup.position.x = 8;
+EelGroup.position.y = -4.5;
+EelGroup.position.z = -1;
+EelGroup.scale.x *= -1;
+EelGroup.rotation.z = Math.PI * -0.15;
+
+scene.add(EelGroup);
+
+let eelFrame = 0;
+
+Eel.active = false;
+setInterval(() => {
+	Eel.active = true;
+	setTimeout(() => {
+		Eel.active = false;
+	}, 1000);
+}, 30000);
