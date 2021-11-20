@@ -1,230 +1,174 @@
-import Chat from 'twitch-chat-emotes';
+import TwitchChat from "twitch-chat-emotes-threejs";
+import * as THREE from "three";
+import "./main.css";
 
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d');
+window.shaderPID = 100;
 
-const bubble_size = 25;
-const emote_size = 50;
-const devicePixelRatio = 1;
+/*
+** connect to twitch chat
+*/
 
-const bubble_img = new Image();
-bubble_img.src = require('./bubble.png');
+// a default array of twitch channels to join
+let channels = ['moonmoon'];
 
-function resize() {
-	canvas.width = window.innerWidth * devicePixelRatio;
-	canvas.height = window.innerHeight * devicePixelRatio;
-}
-
-function init() {
-	document.body.appendChild(canvas);
-
-	window.addEventListener('resize', resize);
-	resize();
-
-	bubbleTimeout();
-	setTimeout(bubbleTimeout, 3000);
-	setTimeout(bubbleTimeout, 5000);
-}
-
-const bubbleTimeout = () => {
-	spawnBubbles();
-	setTimeout(bubbleTimeout, Math.random() * 5000 + 1000);
-}
-
-const bubbles = [];
-const spawnBubbles = () => {
-	const x = Math.random() * canvas.width;
-	const bubbleCount = Math.floor(Math.random() * 10);
-	const r = Math.random() * 7;
-	const speed = Math.random() + 0.5;
-
-	let offset = 0;
-	for (let index = 0; index < bubbleCount; index++) {
-		const thisBubbleScale = 1 - (index) / bubbleCount;
-		bubbles.push({
-			y: canvas.height + offset,
-			x,
-			index,
-			size: thisBubbleScale,
-			r,
-			speed,
-		});
-		offset += (100 * Math.random() + 50) * (thisBubbleScale * 2);
-	}
-}
-
-const emotes = [];
-let last_frame = Date.now();
-function draw() {
-	const delta = (Date.now() - last_frame) / 1000;
-	last_frame = Date.now();
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-	for (let index = bubbles.length - 1; index >= 0; index--) {
-		bubbles[index].y -= delta * 200 * bubbles[index].speed;
-
-		ctx.drawImage(
-			bubble_img,
-			bubbles[index].x + Math.sin(bubbles[index].y / 100 + bubbles[index].index / 4 + bubbles[index].r) * (bubble_size * devicePixelRatio / 2),
-			bubbles[index].y,
-			bubble_size * devicePixelRatio * bubbles[index].size,
-			bubble_size * devicePixelRatio * bubbles[index].size,
-		);
-
-		if (bubbles[index].y < -bubble_size * devicePixelRatio) {
-			bubbles.splice(index, 1);
-		}
-	}
-
-	/*for (let index = 0; index < weeds.length; index++) {
-		const weed = weeds[index];
-		weed.tick(delta);
-	}*/
-
-	for (let i = pendingEmoteArray.length - 1; i >= 0; i--) {
-		const element = pendingEmoteArray.splice(i, 1)[0].emotes;
-		let x = Math.random();
-		x = x * x * x * x * x * x;
-		if (Math.random() < 0.5) {
-			x = (x) * canvas.width / 2 + canvas.width * 0.1;
-		} else {
-			x = (canvas.width / 2) + (1 - x) * (canvas.width / 2.75);
-		}
-
-		const group = {
-			emotes: [],
-			y: canvas.height + element.length * emote_size * devicePixelRatio,
-			x,
-			spawn: Date.now(),
-			r: Math.random(),
-			speed: Math.random() + 0.5,
-		};
-		for (let o = 0; o < element.length; o++) {
-			const emote = emoteTextures[element[o].material.id];
-			group.emotes.push(emote);
-		}
-
-		emotes.push(group);
-	}
-	for (let i = emotes.length - 1; i >= 0; i--) {
-		const group = emotes[i];
-		group.y -= delta * 150 * group.speed;
-		ctx.translate(group.x, group.y);
-		if (group.emotes.length > 1) ctx.rotate(Math.PI / 2);
-		for (let o = 0; o < group.emotes.length; o++) {
-			const element = group.emotes[o];
-			const sinMath = Date.now() / 1000 + group.r * 10 - (o);
-			const sin = Math.sin(sinMath);
-			ctx.save();
-			ctx.translate(
-				group.emotes.length > 1 ? emote_size * devicePixelRatio * o : (sin * emote_size * devicePixelRatio),
-				group.emotes.length > 1 ? sin * emote_size * devicePixelRatio * 0.5 : 0
-			);
-			if (group.emotes.length > 1) ctx.rotate(-Math.sin(sinMath + Math.PI / 2) / 2);
-			ctx.drawImage(
-				element,
-				-emote_size * devicePixelRatio / 2,
-				-emote_size * devicePixelRatio / 2,
-				emote_size * devicePixelRatio,
-				emote_size * devicePixelRatio
-			);
-			ctx.restore();
-		}
-		if (group.y < -emote_size * devicePixelRatio * group.emotes.length) {
-			emotes.splice(i, 1);
-		}
-
-		ctx.setTransform(1, 0, 0, 1, 0, 0);
-	}
-
-	window.requestAnimationFrame(draw);
-}
-
-
-let channels = ['moonmoon', 'antimattertape'];
+// the following few lines of code will allow you to add ?channels=channel1,channel2,channel3 to the URL in order to override the default array of channels
 const query_vars = {};
 const query_parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
 	query_vars[key] = value;
 });
+
 if (query_vars.channels) {
 	channels = query_vars.channels.split(',');
 }
 
-const ChatInstance = new Chat({
+const ChatInstance = new TwitchChat({
+	// If using planes, consider using MeshBasicMaterial instead of SpriteMaterial
+	materialType: THREE.SpriteMaterial,
+
+	// Passed to material options
+	materialOptions: {
+		transparent: true,
+	},
+
 	channels,
-	duplicateEmoteLimit: 5,
-	//duplicateEmoteLimit_pleb: 5,
+	maximumEmoteLimit: 3,
 })
 
-const emoteTextures = {};
-const pendingEmoteArray = [];
-ChatInstance.on("emotes", (e) => {
-	const output = { emotes: [] };
-	for (let index = 0; index < Math.min(7, e.emotes.length); index++) {
-		const emote = e.emotes[index];
-		if (!emoteTextures[emote.material.id]) {
-			emoteTextures[emote.material.id] = emote.material.canvas;
-		}
-		emote.texture = emoteTextures[emote.material.id];
-		output.emotes.push(emote);
-	}
-	pendingEmoteArray.push(output);
-});
+/*
+** Initiate ThreejS scene
+*/
 
-const eelImageSrc = [
-	require(`./eel/eel_1.png`),
-	require(`./eel/eel_2.png`),
-	require(`./eel/eel_3.png`),
-	require(`./eel/eel_4.png`),
-	require(`./eel/eel_5.png`),
-	require(`./eel/eel_6.png`),
-	require(`./eel/eel_7.png`),
-	require(`./eel/eel_8.png`),
-	require(`./eel/eel_9.png`),
-	require(`./eel/eel_10.png`),
-	require(`./eel/eel_11.png`),
-	require(`./eel/eel_12.png`),
-	require(`./eel/eel_13.png`),
-	require(`./eel/eel_14.png`),
-	require(`./eel/eel_15.png`),
-	require(`./eel/eel_16.png`),
-	require(`./eel/eel_17.png`),
-	require(`./eel/eel_18.png`),
-	require(`./eel/eel_19.png`),
-	require(`./eel/eel_20.png`),
-];
-const eelCanvas = document.createElement('canvas');
-eelCanvas.classList.add('eel');
-const eelContext = eelCanvas.getContext('2d');
-const eelImages = new Array(eelImageSrc.length);
-for (let index = 0; index < eelImages.length; index++) {
-	eelImages[index] = new Image();
-	eelImages[index].addEventListener('load', () => {
-		if (eelCanvas.height < eelImages[index].height) eelCanvas.height = Math.max(eelCanvas.height, eelImages[index].height);
-		if (eelCanvas.width < eelImages[index].width) eelCanvas.width = Math.max(eelCanvas.width, eelImages[index].width);
-	});
-	eelImages[index].src = eelImageSrc[index];
+const camera = new THREE.PerspectiveCamera(
+	70,
+	window.innerWidth / window.innerHeight,
+	0.1,
+	1000
+);
+camera.position.z = 10;
+
+const scene = new THREE.Scene();
+const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+function resize() {
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-let eelIndex = 0;
-let eelDirection = 1;
-setInterval(() => {
-	if (eelImages[eelIndex] && eelImages[eelIndex].complete) {
-		eelContext.clearRect(0, 0, eelCanvas.width, eelCanvas.height);
-		eelContext.drawImage(eelImages[eelIndex], 0, 0);
-	}
-
-	eelIndex += eelDirection;
-	if (eelIndex >= eelImages.length || eelIndex < 0) {
-		eelDirection *= -1;
-		eelIndex += eelDirection;
-	}
-}, 60);
-
-
-
 window.addEventListener('DOMContentLoaded', () => {
-	document.body.appendChild(eelCanvas);
-	init();
+	window.addEventListener('resize', resize);
+	if (query_vars.stats) document.body.appendChild(stats.dom);
+	document.body.appendChild(renderer.domElement);
 	draw();
 })
+
+/*
+** Draw loop
+*/
+let lastFrame = Date.now();
+function draw() {
+	if (query_vars.stats) stats.begin();
+	requestAnimationFrame(draw);
+	const delta = (Date.now() - lastFrame) / 1000;
+
+
+	for (let index = sceneEmoteArray.length - 1; index >= 0; index--) {
+		const element = sceneEmoteArray[index];
+		element.position.addScaledVector(element.velocity, delta);
+		if (element.timestamp + element.lifespan < Date.now()) {
+			sceneEmoteArray.splice(index, 1);
+			scene.remove(element);
+		} else {
+			element.update();
+		}
+	}
+	lastFrame = Date.now();
+
+	renderer.render(scene, camera);
+	if (query_vars.stats) stats.end();
+};
+
+
+/*
+** Handle Twitch Chat Emotes
+*/
+const sceneEmoteArray = [];
+ChatInstance.listen((emotes) => {
+	const group = new THREE.Group();
+	group.lifespan = 15000;
+	group.timestamp = Date.now();
+
+	let i = 0;
+	emotes.forEach((emote) => {
+		const sprite = new THREE.Sprite(emote.material);
+		sprite.position.x = i;
+		group.add(sprite);
+		i++;
+	})
+
+	// Set velocity to a random normalized value
+	group.velocity = new THREE.Vector3(
+		0,
+		2,
+		0
+	);
+	group.position.x = (Math.random() * 2 - 1) * 13;
+	group.position.z = Math.random() * -10;
+	group.position.y = -8 + group.position.z * 0.6;
+	const originPos = group.position.clone();
+
+
+	group.update = () => { // called every frame
+		group.position.x = originPos.x + Math.sin((Date.now() + group.timestamp) / 1000);
+	}
+
+	scene.add(group);
+	sceneEmoteArray.push(group);
+});
+
+
+/*
+** Image layers
+*/
+
+import layer0Url from "./img/layer0.png";
+import layer1Url from "./img/layer1.png";
+import layer2Url from "./img/layer2.png";
+import layer3Url from "./img/layer3.png";
+
+const urls = [layer0Url, layer1Url, layer2Url, layer3Url];
+const planes = [];
+
+for (let index = 0; index < urls.length; index++) {
+	const mat = new THREE.MeshBasicMaterial({
+		map: new THREE.TextureLoader().load(urls[index]),
+		transparent: true,
+	});
+	const plane = new THREE.Mesh(new THREE.PlaneGeometry(2048, 1024), mat);
+	plane.scale.setScalar(0.01216);
+	plane.position.y = -1;
+	scene.add(plane);
+	planes.push(plane);
+}
+
+planes[0].position.z = -4;
+planes[0].scale.multiplyScalar(1.4);
+planes[0].position.y = -1.36;
+
+
+planes[3].position.z = 2;
+planes[3].scale.setScalar(0.0098);
+planes[3].position.y += 0.4;
+
+
+import seaWeedMat from "./seaweedmat";
+
+for (let index = 0; index < 20; index++) {
+	const seaWeed = new THREE.Mesh(new THREE.PlaneGeometry(389, 8924, 8, 32), seaWeedMat);
+	seaWeed.scale.setScalar(0.002);
+	seaWeed.position.z = -10 * Math.random();
+	seaWeed.position.y = (-Math.random() * 10 - 1) + seaWeed.position.z * 0.6;
+	seaWeed.position.x = (Math.random() * 2 - 1) * 13;
+	scene.add(seaWeed);
+}

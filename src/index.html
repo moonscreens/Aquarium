@@ -3,61 +3,13 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Aquarium</title>
-	<link rel="stylesheet" href="main.scss">
-	<script src="main.js"></script>
-	<script src="webgl.js"></script>
-
-	<script type='glsl/vertex'>
-		attribute vec2 coords;
-		
-		void main(void) {
-			gl_Position = vec4(coords.xy, 0.0, 1.0);
-		}
-	</script>
-
-	<script type='glsl/fragment'>
-		precision lowp float;
-
-		uniform float width;
-		uniform float height;
-		uniform float u_time;
-
-		void main() {
-			// Normalized position
-			vec2 npos = gl_FragCoord.xy / vec2(width, height);
-
-			// Slanted position
-			float x = gl_FragCoord.x - width * npos.y * 0.5;
-
-			// sin1, sin2, sin3, and sin4 add the soft light shaft effects
-			float sin1 = sin(x / 75.0 + u_time) / 2.0 + 0.5;
-			float sin2 = sin(x / 100.0 - (u_time + 1.0) / 2.3) / 2.0 + 0.5;
-
-			float sin3 = sin(x / 75.0 - u_time * 0.65 + 2.5) / 2.0 + 0.5;
-			float sin4 = sin(x / 100.0 + (u_time * 0.65 + 1.7) / 2.3) / 2.0 + 0.5;
-
-			// sin_neg and sin_neg2 add the hard edges to the soft light
-			float sin_neg = floor(sin(x / 600.0 + u_time * 0.13) / 2.0 + 1.0);
-			float sin_neg2 = floor(sin(x / 300.0 + u_time * 0.25) / 2.0 + 1.0);
-
-			float brightness = max(sin1 * sin2, sin3 * sin4);
-
-			brightness = (brightness) * (npos.y) - (sin_neg + sin_neg2)/15.0;
-			gl_FragColor = vec4(
-				brightness
-			);
-		}
-	</script>
+	<title>Intro Example - ThreeJS</title>
 </head>
 
 <body>
-	<img class="layer1" src="./layer1.png">
-	<img class="layer2" src="./layer2.png">
-	<img class="layer3" src="./layer3.png">
-	<img class="layer4" src="./layer4.png">
-	<img class="layer5" src="./layer5.png">
+
 </body>
 
 </html>
