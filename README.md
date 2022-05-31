@@ -1,16 +1,7 @@
-# 3D intro screen
-A starter template for [Three.JS](https://threejs.org/) based intro screens.
+# Aquarium
+[link](https://aquarium.opl.io/)
 
-## [Yarn](https://classic.yarnpkg.com/en/docs/install)
-```
-yarn install
-yarn start
-```
+## About
+This was made for [moonmoon](https://twitch.tv/moonmoon), feel free to use the code here as a base for your own projects, but try to be respectful and don't carbon copy it. The code is free for anyone to use but the artwork is still the intellectual property of the ones who made it.
 
-## npm (not recommended)
-```
-npm install
-npm run start
-```
-
-After running `start`, open [localhost:1234](http://localhost:1234/). The page should automatically refresh when you make a change.
+[learn more](https://github.com/moonscreens)
