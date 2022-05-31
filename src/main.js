@@ -383,4 +383,4 @@ function triggerEel() {
 	}, Eel.lifespan);
 }
 triggerEel();
-setInterval(triggerEel, 11000);
+setInterval(triggerEel, 30000);
