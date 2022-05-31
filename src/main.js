@@ -22,6 +22,7 @@ if (query_vars.channels) {
 }
 
 const ChatInstance = new TwitchChat({
+	THREE,
 	materialType: THREE.MeshBasicMaterial,
 
 	// Passed to material options
