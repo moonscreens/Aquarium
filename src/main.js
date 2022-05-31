@@ -369,7 +369,6 @@ function EelLeft() {
 scene.add(EelGroup);
 
 let eelFrame = 0;
-EelLeft();
 Eel.timestamp = Date.now()
 Eel.lifespan = 10000;
 
@@ -383,4 +382,4 @@ function triggerEel() {
 	}, Eel.lifespan);
 }
 triggerEel();
-setInterval(triggerEel, 30000);
+setInterval(triggerEel, 45000);
