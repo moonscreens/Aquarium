@@ -31,7 +31,7 @@ const ChatInstance = new TwitchChat({
 	},
 
 	channels,
-	maximumEmoteLimit: 3,
+	maximumEmoteLimit: 4,
 	duplicateEmoteLimit: 3,
 })
 
@@ -234,6 +234,8 @@ planes[0].position.z = -4;
 planes[0].scale.multiplyScalar(1.4);
 planes[0].position.y = -1.36;
 
+planes[2].position.z = 0.01;
+
 
 planes[3].position.z = 2;
 planes[3].scale.setScalar(0.0098);
@@ -343,27 +345,42 @@ const Eel = new THREE.Mesh(
 		transparent: true,
 	}),
 );
-Eel.scale.setScalar(0.009);
 const EelGroup = new THREE.Group();
 EelGroup.add(Eel);
 
-EelGroup.position.x = 8;
-EelGroup.position.y = -4.5;
-EelGroup.position.z = -1;
-EelGroup.scale.x *= -1;
-EelGroup.rotation.z = Math.PI * -0.15;
+
+function EelRight() {
+	Eel.scale.setScalar(0.009);
+	EelGroup.position.x = 8;
+	EelGroup.position.y = -4.5;
+	EelGroup.position.z = -1;
+	EelGroup.scale.x = -1;
+	EelGroup.rotation.z = Math.PI * -0.15;
+}
+function EelLeft() {
+	Eel.scale.setScalar(0.005);
+	EelGroup.position.x = -9;
+	EelGroup.position.y = -4;
+	EelGroup.position.z = 0;
+	EelGroup.rotation.z = Math.PI * 0.15;
+	EelGroup.scale.x = 1;
+}
 
 scene.add(EelGroup);
 
 let eelFrame = 0;
-
-Eel.active = false;
+EelLeft();
+Eel.timestamp = Date.now()
 Eel.lifespan = 10000;
 
-setInterval(() => {
+function triggerEel() {
+	if (Math.random() < 0.5) EelLeft();
+	else EelRight();
 	Eel.active = true;
 	Eel.timestamp = Date.now();
 	setTimeout(() => {
 		Eel.active = false;
 	}, Eel.lifespan);
-}, 60000);
+}
+triggerEel();
+setInterval(triggerEel, 11000);
