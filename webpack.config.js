@@ -15,7 +15,7 @@ module.exports = {
 		}),
 	],
 	devServer: {
-		contentBase: `${__dirname}/dist`,
+		static: `${__dirname}/static`,
 		compress: true,
 		port: 1234,
 	},
